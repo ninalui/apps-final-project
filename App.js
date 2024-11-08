@@ -14,7 +14,6 @@ import MyBreedScreen from './Screens/MyBreedScreen';
 
 // Create navigation stacks
 const ProfileStack = createNativeStackNavigator();
-const LeaderboardStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function ProfileStackScreen() {
