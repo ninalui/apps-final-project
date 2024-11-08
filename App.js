@@ -26,14 +26,6 @@ function ProfileStackScreen() {
   );
 }
 
-function LeaderboardStackScreen() {
-  return (
-    <LeaderboardStack.Navigator>
-      <LeaderboardStack.Screen name="LeaderboardMain" component={LeaderboardScreen} options={{ title: 'Leader Board' }} />
-      <LeaderboardStack.Screen name="UserProfile" component={ProfileScreen} options={{ title: 'Profile' }} />
-    </LeaderboardStack.Navigator>
-  );
-}
 
 export default function App() {
   return (
@@ -56,8 +48,8 @@ export default function App() {
         />
         <Tab.Screen
           name="Leaderboard"
-          component={LeaderboardStackScreen}
-          options={{ headerShown: false }}
+          component={LeaderboardScreen}
+          options={{ title: 'Leader Board' }}
         />
         <Tab.Screen
           name="Profile"
