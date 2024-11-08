@@ -1,8 +1,8 @@
-import { View, Text } from 'react-native';
+import { View, Text, Pressable } from 'react-native';
 
-const LeaderboardScreen = () => {
+const LeaderboardScreen = ({ navigation }) => {
     return (
-        <View >
+        <View>
             <Text>Leaderboard Screen</Text>
         </View>
     );

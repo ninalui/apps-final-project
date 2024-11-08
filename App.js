@@ -3,25 +3,35 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 // Import screen components
-import HomeScreen from './Components/HomeScreen';
-import MapScreen from './Components/MapScreen';
-import PostScreen from './Components/PostScreen';
-import LeaderboardScreen from './Components/LeaderboardScreen';
-import ProfileScreen from './Components/ProfileScreen';
-import MyBreedScreen from './Components/MyBreedScreen';
+import HomeScreen from './Screens/HomeScreen';
+import MapScreen from './Screens/MapScreen';
+import PostScreen from './Screens/CreatePostScreen';
+import LeaderboardScreen from './Screens/LeaderboardScreen';
+import ProfileScreen from './Screens/ProfileScreen';
+import MyBreedScreen from './Screens/MyBreedScreen';
 
 
 
 // Create navigation stacks
-const HomeStack = createNativeStackNavigator();
+const ProfileStack = createNativeStackNavigator();
+const LeaderboardStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-function HomeStackScreen() {
+function ProfileStackScreen() {
   return (
-    <HomeStack.Navigator>
-      <HomeStack.Screen name="MyPosts" component={HomeScreen} options={{ title: 'My Posts' }} />
-      <HomeStack.Screen name="MyBreed" component={MyBreedScreen} options={{ title: 'My Breed' }} />
-    </HomeStack.Navigator>
+    <ProfileStack.Navigator>
+      <ProfileStack.Screen name="MyProfile" component={ProfileScreen} options={{ title: 'My Profile' }} />
+      <ProfileStack.Screen name="MyBreed" component={MyBreedScreen} options={{ title: 'My Breed' }} />
+    </ProfileStack.Navigator>
+  );
+}
+
+function LeaderboardStackScreen() {
+  return (
+    <LeaderboardStack.Navigator>
+      <LeaderboardStack.Screen name="LeaderboardMain" component={LeaderboardScreen} options={{ title: 'Leader Board' }} />
+      <LeaderboardStack.Screen name="UserProfile" component={ProfileScreen} options={{ title: 'Profile' }} />
+    </LeaderboardStack.Navigator>
   );
 }
 
@@ -31,8 +41,8 @@ export default function App() {
       <Tab.Navigator>
         <Tab.Screen
           name="Home"
-          component={HomeStackScreen}
-          options={{ headerShown: false }}
+          component={HomeScreen}
+          options={{ title: 'Home' }}
         />
         <Tab.Screen
           name="Map"
@@ -46,13 +56,13 @@ export default function App() {
         />
         <Tab.Screen
           name="Leaderboard"
-          component={LeaderboardScreen}
-          options={{ title: 'Leader Board' }}
+          component={LeaderboardStackScreen}
+          options={{ headerShown: false }}
         />
         <Tab.Screen
           name="Profile"
-          component={ProfileScreen}
-          options={{ title: 'My Profile' }}
+          component={ProfileStackScreen}
+          options={{ headerShown: false }}
         />
       </Tab.Navigator>
     </NavigationContainer>

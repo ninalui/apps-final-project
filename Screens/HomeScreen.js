@@ -1,11 +1,11 @@
 import { View, Text } from 'react-native';
 
-const PostScreen = () => {
+const HomeScreen = () => {
     return (
         <View>
-            <Text>Post Screen</Text>
+            <Text>My Post</Text>
         </View>
     );
 };
 
-export default PostScreen;
+export default HomeScreen;
