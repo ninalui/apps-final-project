@@ -29,7 +29,7 @@ function ProfileStackScreen() {
 
 function AppStack() {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator initialRouteName="Profile">
       <Tab.Screen name="Home" component={HomeScreen} options={{ title: 'Home' }} />
       <Tab.Screen name="Map" component={MapScreen} options={{ title: 'HotSpots' }} />
       <Tab.Screen name="Post" component={PostScreen} options={{ title: 'New Post' }} />
