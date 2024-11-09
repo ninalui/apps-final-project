@@ -1,5 +1,16 @@
 import { database } from './firebaseSetup';
-import { collection, addDoc, doc, getDoc, getDocs, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, addDoc, doc, getDoc, getDocs, updateDoc, deleteDoc, setDoc } from 'firebase/firestore';
+
+
+// Function for writing user data with custom ID
+export async function writeUserToDB(data, uid) {
+    try {
+        const userRef = doc(database, 'users', uid);
+        await setDoc(userRef, data);
+    } catch (error) {
+        console.error('Error adding user document: ', error);
+    }
+}
 
 // Create a new document in the specified collection
 export async function writeToDB(data, collectionName) {
@@ -28,21 +39,21 @@ export async function getDocument(docID, collectionName) {
 
 // Get all documents from the specified collection
 export async function getAllDocuments(collectionName) {
-  try {
-      const querySnapshot = await getDocs(collection(database, collectionName));
-      const data = [];
-      if (querySnapshot.empty) {
-          console.log("No documents found in ", collectionName);
-          return data;
-      }
-      querySnapshot.forEach((docSnapshot) => {
-          data.push(docSnapshot.data());
-      });
-      return data;
-  }
-  catch (error) {
-      console.log("Error getting documents: ", error);
-  }
+    try {
+        const querySnapshot = await getDocs(collection(database, collectionName));
+        const data = [];
+        if (querySnapshot.empty) {
+            console.log("No documents found in ", collectionName);
+            return data;
+        }
+        querySnapshot.forEach((docSnapshot) => {
+            data.push(docSnapshot.data());
+        });
+        return data;
+    }
+    catch (error) {
+        console.log("Error getting documents: ", error);
+    }
 }
 
 // Update a document in the specified collection
