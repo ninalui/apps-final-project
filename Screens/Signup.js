@@ -2,11 +2,13 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'reac
 import React, { useState } from 'react'
 import { auth } from '../Firebase/firebaseSetup'  // Import auth instance
 import { createUserWithEmailAndPassword } from 'firebase/auth'  // Import the auth function
+import { writeUserToDB } from '../Firebase/firestoreHelper'
 
 export default function Signup({ navigation }) {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
+    const [username, setUsername] = useState('')
 
     const handleSignup = async () => {
         // Basic validation
@@ -21,8 +23,18 @@ export default function Signup({ navigation }) {
         }
 
         try {
+            // 1. Create authentication record
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            console.log('User registered successfully:', userCredential.user);
+            const user = userCredential.user;
+
+            // 2. Create main user profile
+            await writeUserToDB({
+                email: user.email,
+                username: username,
+                displayName: '',
+                photoURL: '',
+            }, user.uid);
+
         } catch (error) {
             let errorMessage = 'An error occurred during registration';
 
@@ -50,6 +62,14 @@ export default function Signup({ navigation }) {
     return (
         <View style={styles.container}>
             <View style={styles.formContainer}>
+                <Text style={styles.label}>Username</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Username"
+                    value={username}
+                    onChangeText={setUsername}
+                    autoCapitalize="none"
+                />
                 <Text style={styles.label}>Email Address</Text>
                 <TextInput
                     style={styles.input}
