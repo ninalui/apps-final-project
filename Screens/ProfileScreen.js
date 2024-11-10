@@ -9,6 +9,7 @@ import { collection, getDocs, onSnapshot, query, where } from 'firebase/firestor
 import NotificationModal from '../ReusableComponent/NotificationModal';
 import CustomModal from '../ReusableComponent/CustomModal';
 import ImageDisplay from '../ReusableComponent/ImageDisplay';
+import ImageModal from '../ReusableComponent/ImageModal';
 
 const ProfileScreen = ({ navigation }) => {
     const [userImageUri, setUserImageUri] = useState('');
@@ -22,6 +23,11 @@ const ProfileScreen = ({ navigation }) => {
     };
     const [notificationOn, setNotificationOn] = useState(false);
     const [notificationTime, setNotificationTime] = useState(new Date());
+
+    const [showEditImageModal, setShowEditImageModal] = useState(false);
+    function toggleEditImageModal() {
+        setShowEditImageModal(!showEditImageModal);
+    };
 
     const createDateFromTimeString = (timeString) => {
         if (!timeString) {
@@ -114,9 +120,23 @@ const ProfileScreen = ({ navigation }) => {
 
             {/* User image */}
             <View style={styles.userImageIcon}>
-                {/* Display if user has photo */}
-                {userImageUri && <ImageDisplay imageUri={userImageUri} displayStyle={styles.userImageIcon} />}
+                <Pressable onPress={() => setShowEditImageModal(true)}>
+                    {/* Display if user has photo */}
+                    {userImageUri ? (
+                        <ImageDisplay imageUri={userImageUri} displayStyle={styles.userImageIcon} />
+                    ) : (
+                        <MaterialCommunityIcons name="account" size={75} color="black" />
+                    )}
+                </Pressable>
             </View>
+
+            <CustomModal showModal={showEditImageModal} toggleModal={toggleEditImageModal}>
+                <ImageModal
+                    userImage={userImageUri}
+                    setUserImage={setUserImageUri}
+                    toggleEditImageModal={toggleEditImageModal}
+                />
+            </CustomModal>
 
             {/* User name */}
             <Text style={styles.boldText}>
