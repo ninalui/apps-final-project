@@ -1,5 +1,44 @@
 import { database } from './firebaseSetup';
-import { collection, addDoc, doc, getDoc, getDocs, updateDoc, deleteDoc, setDoc } from 'firebase/firestore';
+import { collection, addDoc, doc, getDoc, getDocs, updateDoc, deleteDoc, setDoc, increment } from 'firebase/firestore';
+
+// Write to posts subcollection
+export async function createPost(userId, postData) {
+    try {
+        const userPostsRef = collection(database, 'users', userId, 'posts');
+        const docRef = await addDoc(userPostsRef, {
+            ...postData,
+            createdAt: new Date()
+        });
+        return docRef.id;  // Return the new post ID
+    } catch (error) {
+        console.error('Error creating post: ', error);
+        throw error;
+    }
+}
+
+// Update or create breed count in breeds subcollection
+export async function updateBreedCount(userId, breedName) {
+    try {
+        const userBreedsRef = doc(database, 'users', userId, 'breeds', breedName);
+        const breedDoc = await getDoc(userBreedsRef);
+
+        if (breedDoc.exists()) {
+            // Increment count if breed exists
+            await updateDoc(userBreedsRef, {
+                count: increment(1)
+            });
+        } else {
+            // Create new breed document if it doesn't exist
+            await setDoc(userBreedsRef, {
+                breedName: breedName,
+                count: 1
+            });
+        }
+    } catch (error) {
+        console.error('Error updating breed count: ', error);
+        throw error;
+    }
+}
 
 
 // Function for writing user data with custom ID
