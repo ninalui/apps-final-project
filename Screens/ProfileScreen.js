@@ -4,6 +4,7 @@ import { auth } from '../Firebase/firebaseSetup';
 import { getDocument } from '../Firebase/firestoreHelper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import BreedIcon from '../ReusableComponent/BreedIcon';
+import BreedCounter from '../ReusableComponent/BreedCounter';
 
 const ProfileScreen = ({ navigation }) => {
     const [username, setUsername] = useState('');
@@ -50,9 +51,7 @@ const ProfileScreen = ({ navigation }) => {
 
             {/* Breed collection progress */}
             {/* Placeholder - making reusable component */}
-            <Text>
-                0/120 Breeds Collected
-            </Text>
+            <BreedCounter />
 
             {/* Navigate to breed collection */}
             <Pressable
