@@ -1,11 +1,17 @@
 import { View, StyleSheet, Pressable, Image, Platform, Alert } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import { MaterialIcons } from '@expo/vector-icons';
 
-export default function ImageManager({ onImageTaken }) {
+export default function ImageManager({ onImageTaken, shouldReset }) {
     const [permission, requestPermission] = ImagePicker.useCameraPermissions();
     const [imageUri, setImageUri] = useState(null);
+
+    useEffect(() => {
+        if (shouldReset) {
+            setImageUri(null);
+        }
+    }, [shouldReset]);
 
     const verifyPermission = async () => {
         if (permission?.granted) {
