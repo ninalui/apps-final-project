@@ -7,11 +7,17 @@ import BreedIcon from '../ReusableComponent/BreedIcon';
 import BreedCounter from '../ReusableComponent/BreedCounter';
 import { getAllDocuments } from '../Firebase/firestoreHelper';
 import { collection, getDocs, query, where } from 'firebase/firestore';
+import NotificationModal from '../ReusableComponent/NotificationModal';
 
 const ProfileScreen = ({ navigation }) => {
     const [username, setUsername] = useState('');
     const [topBreeds, setTopBreeds] = useState([]);
     const currentUser = auth.currentUser.uid;
+
+    const [showModal, setShowModal] = useState(false);
+    function toggleModal() {
+        setShowModal(!showModal);
+    };
 
     // Fetch user data from database
     useEffect(() => {
@@ -72,10 +78,14 @@ const ProfileScreen = ({ navigation }) => {
         <View style={styles.container}>
             {/* Button for notification settings */}
             <View style={styles.notificationContainer}>
-                <Pressable>
+                <Pressable
+                    onPress={() => setShowModal(true)}
+                >
                     <MaterialCommunityIcons name="bell" size={24} color="blue" />
                 </Pressable>
             </View>
+
+            <NotificationModal showModal={showModal} toggleModal={toggleModal} />
 
 
             {/* User image */}
