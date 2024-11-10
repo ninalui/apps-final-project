@@ -8,23 +8,12 @@ export default function NotificationModal({ showModal, toggleModal, notification
   const [isOn, setIsOn] = useState(notificationOn);
   const [time, setTime] = useState(notificationTime);
 
-  const createDateFromTimeString = (timeString) => {
-    if (!timeString) {
-      return new Date();
-    }
-    const [hours, minutes] = timeString.split(':');
-    const date = new Date();
-    date.setHours(hours);
-    date.setMinutes(minutes);
-    return date;
-  };
-
   useEffect(() => {
     if (showModal) {
       setIsOn(notificationOn);
-      setTime(notificationTime instanceof Date ? notificationTime : createDateFromTimeString(notificationTime));
+      setTime(notificationTime);
     }
-  }, [showModal, notificationOn]);
+  }, [showModal]);
 
   const toggleSwitch = () => setIsOn(previousState => !previousState);
 

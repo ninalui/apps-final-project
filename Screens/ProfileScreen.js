@@ -20,6 +20,17 @@ const ProfileScreen = ({ navigation }) => {
     const [notificationOn, setNotificationOn] = useState(false);
     const [notificationTime, setNotificationTime] = useState(new Date());
 
+    const createDateFromTimeString = (timeString) => {
+        if (!timeString) {
+          return new Date();
+        }
+        const [hours, minutes] = timeString.split(':');
+        const date = new Date();
+        date.setHours(hours);
+        date.setMinutes(minutes);
+        return date;
+      };
+
     // Fetch user data from database
     useEffect(() => {
         const fetchUserData = async () => {
@@ -32,7 +43,7 @@ const ProfileScreen = ({ navigation }) => {
                     if (userData) {
                         setUsername(userData.username);
                         setNotificationOn(userData.notificationOn);
-                        setNotificationTime(userData.notificationTime);
+                        setNotificationTime(userData.notificationTime ? createDateFromTimeString(userData.notificationTime) : new Date());
                     }
                 }
             } catch (error) {
