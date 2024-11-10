@@ -1,17 +1,14 @@
-import { View, Text, StyleSheet, Image } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
+import ImageDisplay from './ImageDisplay'
 
 export default function BreedIcon({ breedImage, breedName }) {
-
-  // todo: download image from database
-
   return (
     <View style={styles.container}>
       <View style={styles.breedImage}>
-        {/* todo: update with image from database */}
-        <Image source={{uri: breedImage}} />
+        <ImageDisplay imageUri={breedImage} />
       </View>
-      <Text>{breedName}</Text>
+      <Text style={styles.breedText}>{breedName}</Text>
     </View>
   )
 }
@@ -28,5 +25,10 @@ const styles = StyleSheet.create({
     width: 90,
     height: 70,
     margin: 10,
+    marginBottom: 0,
+  }, 
+  breedText: {
+    fontSize: 16,
+    padding: 5,
   }
 })
