@@ -1,17 +1,65 @@
 import React, { useState } from 'react';
 import { Alert, Modal, StyleSheet, Text, Pressable, View, Switch } from 'react-native';
+import { auth } from '../Firebase/firebaseSetup';
+import { updateDB } from '../Firebase/firestoreHelper';
 
 export default function NotificationModal({ showModal, toggleModal }) {
-  const [notificationOn, setNotificationOn] = useState(true);
+  const [notificationOn, setNotificationOn] = useState(false);
   const toggleSwitch = () => setNotificationOn(previousState => !previousState);
   const [notificationTime, setNotificationTime] = useState(new Date());
 
   function handleCancel() {
-    console.log('Cancel');
+    // Alert user to confirm cancel then close modal on confirmation
+    Alert.alert(
+      'Cancel',
+      'Are you sure you want to cancel? Any changes will not be saved.',
+      [
+        {
+          text: 'Yes',
+          onPress: () => toggleModal(),
+        },
+        {
+          text: 'No',
+        },
+      ],
+    );
   }
 
   async function handleSave() {
-    console.log('Save');
+    try {
+      const currentUser = auth.currentUser.uid;
+      if (currentUser) {
+        // Time is set to null if notifications are off
+        let formattedTime = null;
+        if (notificationOn) {
+          // If notifications are on, format time into HH:MM format for database
+          const hours = notificationTime.getHours().toString().padStart(2, '0');
+          const minutes = notificationTime.getMinutes().toString().padStart(2, '0');
+          formattedTime = `${hours}:${minutes}`;
+        }
+        // Save notification settings to database
+        const notificationSettings = {
+          notificationOn: notificationOn,
+          notificationTime: formattedTime,
+        };
+        console.log(notificationSettings);
+        await updateDB(currentUser, notificationSettings, 'users');
+      }
+    } catch (error) {
+      console.error('Error saving notification settings:', error);
+    }
+
+    // Provide confirm message and close modal
+    Alert.alert(
+      'Save',
+      'Notification settings saved.',
+      [
+        {
+          text: 'OK',
+          onPress: () => toggleModal(),
+        },
+      ],
+    );
   }
 
   return (
