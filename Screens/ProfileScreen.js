@@ -5,8 +5,7 @@ import { getDocument } from '../Firebase/firestoreHelper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import BreedIcon from '../ReusableComponent/BreedIcon';
 import BreedCounter from '../ReusableComponent/BreedCounter';
-import { getAllDocuments } from '../Firebase/firestoreHelper';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, onSnapshot, query, where } from 'firebase/firestore';
 import NotificationModal from '../ReusableComponent/NotificationModal';
 
 const ProfileScreen = ({ navigation }) => {
@@ -46,36 +45,36 @@ const ProfileScreen = ({ navigation }) => {
 
     // Fetch user's top breeds from database
     useEffect(() => {
-        const fetchTopBreeds = async () => {
-            try {
-                // Get top breeds from user's breed subcollection
-                const breedSubcollectionPath = `users/${currentUser}/breeds`;
-                const breeds = await getAllDocuments(breedSubcollectionPath);
-                // Sort breeds by count in descending order and get top 3
+        const unsubscribe = onSnapshot(
+            collection(database, `users/${currentUser}/breeds`),
+            (snapshot) => {
+                const breeds = snapshot.docs.map(doc => doc.data());
                 const sortedBreeds = breeds.sort((a, b) => b.count - a.count).slice(0, 3);
                 const usersTopBreeds = sortedBreeds.map(breed => ({ breedName: breed.breedName }));
 
-                // Get image urls from user's posts 
-                const postsSubcollectionPath = `users/${currentUser}/posts`;
-                for (const breed of usersTopBreeds) {
-                    const postsQuery = query(
-                        collection(database, postsSubcollectionPath),
-                        where('breed', '==', breed.breedName), // Only get posts of top breeds
-                    );
-                    const post = await getDocs(postsQuery);
-                    if (post.docs.length > 0) {
-                        // Get image url from the first post
-                        const postImage = post.docs[0].data().imageUrl;
-                        breed.breedImage = postImage;
+                const fetchBreedImages = async () => {
+                    const postsSubcollectionPath = `users/${currentUser}/posts`;
+                    for (const breed of usersTopBreeds) {
+                        const postsQuery = query(
+                            collection(database, postsSubcollectionPath),
+                            where('breed', '==', breed.breedName), // Only get posts of top breeds
+                        );
+                        const post = await getDocs(postsQuery);
+                        if (post.docs.length > 0) {
+                            // Get image url from the first post
+                            const postImage = post.docs[0].data().imageUrl;
+                            breed.breedImage = postImage;
+                        }
                     }
+                    setTopBreeds(usersTopBreeds);
                 }
-                console.log('Top breeds:', usersTopBreeds);
-                setTopBreeds(usersTopBreeds);
-            } catch (error) {
-                console.error('Error fetching breed count: ', error);
+                fetchBreedImages();
+            },
+            (error) => {
+                console.error('Error fetching top breeds:', error);
             }
-        }
-        fetchTopBreeds();
+        );
+        return () => unsubscribe();
     }, [currentUser]);
 
     return (
