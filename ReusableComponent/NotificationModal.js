@@ -29,6 +29,9 @@ export default function NotificationModal({ showModal, toggleModal, notification
   const toggleSwitch = () => setIsOn(previousState => !previousState);
 
   function handleCancel() {
+    // Reset state to initial values (matching database)
+    setIsOn(notificationOn);
+    setTime(notificationTime);
     // Alert user to confirm cancel then close modal on confirmation
     Alert.alert(
       'Cancel',
