@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Image, StyleSheet } from "react-native";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
-export default function ImageDisplay({ imageUri }) {
+export default function ImageDisplay({ imageUri, displayStyle }) {
   const [imageUrl, setImageUrl] = useState(null);
 
   useEffect(() => {
@@ -19,7 +19,7 @@ export default function ImageDisplay({ imageUri }) {
 
   return (
     <Image
-      style={styles.image}
+      style={[styles.image, displayStyle]}
       source={{ uri: imageUrl }}
     />
   );

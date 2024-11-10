@@ -7,8 +7,10 @@ import BreedIcon from '../ReusableComponent/BreedIcon';
 import BreedCounter from '../ReusableComponent/BreedCounter';
 import { collection, getDocs, onSnapshot, query, where } from 'firebase/firestore';
 import NotificationModal from '../ReusableComponent/NotificationModal';
+import ImageDisplay from '../ReusableComponent/ImageDisplay';
 
 const ProfileScreen = ({ navigation }) => {
+    const [userImageUri, setUserImageUri] = useState('');
     const [username, setUsername] = useState('');
     const [topBreeds, setTopBreeds] = useState([]);
     const currentUser = auth.currentUser.uid;
@@ -41,6 +43,7 @@ const ProfileScreen = ({ navigation }) => {
                     // Get user document from Firestore
                     const userData = await getDocument(currentUser.uid, 'users');
                     if (userData) {
+                        setUserImageUri(userData.photoURL);
                         setUsername(userData.username);
                         setNotificationOn(userData.notificationOn);
                         setNotificationTime(userData.notificationTime ? createDateFromTimeString(userData.notificationTime) : new Date());
@@ -110,8 +113,9 @@ const ProfileScreen = ({ navigation }) => {
 
 
             {/* User image */}
-            {/* Placeholder, need to fetch from database */}
             <View style={styles.userImageIcon}>
+                {/* Display if user has photo */}
+                {userImageUri && <ImageDisplay imageUri={userImageUri} displayStyle={styles.userImageIcon} />}
             </View>
 
             {/* User name */}
