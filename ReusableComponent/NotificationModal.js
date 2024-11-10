@@ -96,50 +96,62 @@ export default function NotificationModal({ showModal, toggleModal, notification
         <View style={styles.modalContainer}>
           {/* Toggle notifications on and off */}
           <View style={styles.row}>
-            <Text style={{ padding: 10 }}>
-              Notifications
-            </Text>
-
-            <View style={{ padding: 10 }}>
-              {isOn ? <Text>On</Text> : <Text>Off</Text>}
+            <View style={styles.textContainer}>
+              <Text style={styles.text}>
+                Enable Notifications
+              </Text>
             </View>
-
-            <Switch
-              trackColor={{ false: 'lightgray', true: 'blue' }}
-              thumbColor={isOn ? 'white' : 'white'}
-              ios_backgroundColor="#3e3e3e"
-              onValueChange={toggleSwitch}
-              value={isOn}
-            />
+            <View style={styles.switchContainer}>
+              <Switch
+                trackColor={{ false: 'lightgray', true: 'blue' }}
+                thumbColor={isOn ? 'white' : 'white'}
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={toggleSwitch}
+                value={isOn}
+              />
+            </View>
           </View>
 
           {/* If notifications are on, display input to set time */}
           {isOn &&
             <View style={styles.row}>
-              <Text style={{ padding: 10 }}>Time</Text>
-              <DateOrTimePicker value={time} setValue={setTime} mode='time' />
+              <View style={styles.textContainer}>
+                <Text style={styles.text}>Time</Text>
+              </View>
+              <View style={styles.timeInputContainer}>
+                <DateOrTimePicker value={time} setValue={setTime} mode='time' />
+              </View>
             </View>
           }
 
           {/* Save and cancel buttons */}
           <View style={styles.row}>
             <Pressable
-              onPress={handleSave}
+              style={({ pressed }) => [
+                styles.button,
+                styles.cancelButton,
+                pressed && styles.buttonPressed
+              ]}
+              onPress={handleCancel}
             >
-              <Text style={{ color: 'blue', padding: 10 }}>
-                Save
+              <Text style={styles.buttonText}>
+                CANCEL
               </Text>
             </Pressable>
 
             <Pressable
-              onPress={handleCancel}
+              style={({ pressed }) => [
+                styles.button,
+                styles.saveButton,
+                pressed && styles.buttonPressed
+              ]}
+              onPress={handleSave}
             >
-              <Text style={{ color: 'blue', padding: 10 }}>
-                Cancel
+              <Text style={styles.buttonText}>
+                SAVE
               </Text>
             </Pressable>
           </View>
-
         </View>
       </View>
     </Modal>
@@ -166,10 +178,55 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+    width: '80%',
   },
   row: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    paddingVertical: 10,
+  },
+  textContainer: {
+    flex: 1,
+  },
+  timeInputContainer: {
+    flex: 3
+  },
+  switchContainer: {
+    alignItems: 'flex-end',
+  },
+  text: {
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  button: {
+    flex: 1,
+    padding: 15,
+    borderRadius: 8,
+    marginHorizontal: 10,
+    alignItems: 'center',
+    elevation: 2,  // Android shadow
+    shadowColor: '#000',  // iOS shadow
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  buttonPressed: {
+    transform: [{ scale: 0.98 }],
+    opacity: 0.9,
+  },
+  cancelButton: {
+    backgroundColor: '#ff4444',
+  },
+  saveButton: {
+    backgroundColor: '#4CAF50',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   }
 });
