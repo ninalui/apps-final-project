@@ -1,14 +1,19 @@
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { useState, useEffect } from 'react';
-import { auth } from '../Firebase/firebaseSetup';
+import { auth, database } from '../Firebase/firebaseSetup';
 import { getDocument } from '../Firebase/firestoreHelper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import BreedIcon from '../ReusableComponent/BreedIcon';
 import BreedCounter from '../ReusableComponent/BreedCounter';
+import { getAllDocuments } from '../Firebase/firestoreHelper';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 
 const ProfileScreen = ({ navigation }) => {
     const [username, setUsername] = useState('');
+    const [topBreeds, setTopBreeds] = useState([]);
+    const currentUser = auth.currentUser.uid;
 
+    // Fetch user data from database
     useEffect(() => {
         const fetchUserData = async () => {
             try {
@@ -28,6 +33,40 @@ const ProfileScreen = ({ navigation }) => {
 
         fetchUserData();
     }, []);
+
+    // Fetch user's top breeds from database
+    useEffect(() => {
+        const fetchTopBreeds = async () => {
+            try {
+                // Get top breeds from user's breed subcollection
+                const breedSubcollectionPath = `users/${currentUser}/breeds`;
+                const breeds = await getAllDocuments(breedSubcollectionPath);
+                // Sort breeds by count in descending order and get top 3
+                const sortedBreeds = breeds.sort((a, b) => b.count - a.count).slice(0, 3);
+                const usersTopBreeds = sortedBreeds.map(breed => ({ breedName: breed.breedName }));
+
+                // Get image urls from user's posts 
+                const postsSubcollectionPath = `users/${currentUser}/posts`;
+                for (const breed of usersTopBreeds) {
+                    const postsQuery = query(
+                        collection(database, postsSubcollectionPath),
+                        where('breed', '==', breed.breedName), // Only get posts of top breeds
+                    );
+                    const post = await getDocs(postsQuery);
+                    if (post.docs.length > 0) {
+                        // Get image url from the first post
+                        const postImage = post.docs[0].data().imageUrl;
+                        breed.breedImage = postImage;
+                    }
+                }
+                console.log('Top breeds:', usersTopBreeds);
+                setTopBreeds(usersTopBreeds);
+            } catch (error) {
+                console.error('Error fetching breed count: ', error);
+            }
+        }
+        fetchTopBreeds();
+    }, [currentUser]);
 
     return (
         <View style={styles.container}>
@@ -66,9 +105,9 @@ const ProfileScreen = ({ navigation }) => {
                 Top Breeds
             </Text>
             <View style={styles.topBreedIconsContainer}>
-                <BreedIcon />
-                <BreedIcon />
-                <BreedIcon />
+                {topBreeds.map((breed, index) => (
+                    <BreedIcon key={index} breedName={breed.breedName} breedImage={breed.breedImage}  />
+                ))}
             </View>
         </View>
 

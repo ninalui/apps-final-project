@@ -1,16 +1,18 @@
 import { View, Text, StyleSheet, Image } from 'react-native'
 import React from 'react'
 
-export default function BreedIcon() {
+export default function BreedIcon({ breedImage, breedName }) {
+
+  // todo: download image from database
+
   return (
     <View style={styles.container}>
       <View style={styles.breedImage}>
         {/* todo: update with image from database */}
+        <Image source={{uri: breedImage}} />
       </View>
-      {/* todo: update with actual breed from database */}
-      <Text>Breed name</Text>
+      <Text>{breedName}</Text>
     </View>
-
   )
 }
 
