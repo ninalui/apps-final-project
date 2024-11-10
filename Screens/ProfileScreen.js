@@ -18,6 +18,8 @@ const ProfileScreen = ({ navigation }) => {
     function toggleModal() {
         setShowModal(!showModal);
     };
+    const [notificationOn, setNotificationOn] = useState(false);
+    const [notificationTime, setNotificationTime] = useState(new Date());
 
     // Fetch user data from database
     useEffect(() => {
@@ -30,6 +32,8 @@ const ProfileScreen = ({ navigation }) => {
                     const userData = await getDocument(currentUser.uid, 'users');
                     if (userData) {
                         setUsername(userData.username);
+                        setNotificationOn(userData.notificationOn);
+                        setNotificationTime(userData.notificationTime);
                     }
                 }
             } catch (error) {
@@ -85,7 +89,14 @@ const ProfileScreen = ({ navigation }) => {
                 </Pressable>
             </View>
 
-            <NotificationModal showModal={showModal} toggleModal={toggleModal} />
+            <NotificationModal
+                showModal={showModal}
+                toggleModal={toggleModal}
+                notificationOn={notificationOn}
+                setNotificationOn={setNotificationOn}
+                notificationTime={notificationTime}
+                setNotificationTime={setNotificationTime}
+            />
 
 
             {/* User image */}
@@ -116,7 +127,7 @@ const ProfileScreen = ({ navigation }) => {
             </Text>
             <View style={styles.topBreedIconsContainer}>
                 {topBreeds.map((breed, index) => (
-                    <BreedIcon key={index} breedName={breed.breedName} breedImage={breed.breedImage}  />
+                    <BreedIcon key={index} breedName={breed.breedName} breedImage={breed.breedImage} />
                 ))}
             </View>
         </View>

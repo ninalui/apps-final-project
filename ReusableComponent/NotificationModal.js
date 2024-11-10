@@ -1,12 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, Modal, StyleSheet, Text, Pressable, View, Switch } from 'react-native';
 import { auth } from '../Firebase/firebaseSetup';
 import { updateDB } from '../Firebase/firestoreHelper';
 
-export default function NotificationModal({ showModal, toggleModal }) {
-  const [notificationOn, setNotificationOn] = useState(false);
-  const toggleSwitch = () => setNotificationOn(previousState => !previousState);
-  const [notificationTime, setNotificationTime] = useState(new Date());
+export default function NotificationModal({ showModal, toggleModal, notificationOn, setNotificationOn, notificationTime, setNotificationTime }) {
+  const [isOn, setIsOn] = useState(notificationOn);
+  const [time, setTime] = useState(notificationTime);
+
+  useEffect(() => {
+    if (showModal) {
+      setIsOn(notificationOn);
+      setTime(notificationTime);
+    }
+  }, [showModal, notificationOn, notificationTime]);
+
+  const toggleSwitch = () => setIsOn(previousState => !previousState);
 
   function handleCancel() {
     // Alert user to confirm cancel then close modal on confirmation
@@ -31,19 +39,21 @@ export default function NotificationModal({ showModal, toggleModal }) {
       if (currentUser) {
         // Time is set to null if notifications are off
         let formattedTime = null;
-        if (notificationOn) {
+        if (isOn) {
           // If notifications are on, format time into HH:MM format for database
-          const hours = notificationTime.getHours().toString().padStart(2, '0');
-          const minutes = notificationTime.getMinutes().toString().padStart(2, '0');
+          const hours = time.getHours().toString().padStart(2, '0');
+          const minutes = time.getMinutes().toString().padStart(2, '0');
           formattedTime = `${hours}:${minutes}`;
         }
         // Save notification settings to database
         const notificationSettings = {
-          notificationOn: notificationOn,
+          notificationOn: isOn,
           notificationTime: formattedTime,
         };
         console.log(notificationSettings);
         await updateDB(currentUser, notificationSettings, 'users');
+        setNotificationOn(isOn);
+        setNotificationTime(time);
       }
     } catch (error) {
       console.error('Error saving notification settings:', error);
@@ -77,24 +87,24 @@ export default function NotificationModal({ showModal, toggleModal }) {
             </Text>
 
             <View style={{ padding: 10 }}>
-              {notificationOn ? <Text>On</Text> : <Text>Off</Text>}
+              {isOn ? <Text>On</Text> : <Text>Off</Text>}
             </View>
 
             <Switch
               trackColor={{ false: 'lightgray', true: 'blue' }}
-              thumbColor={notificationOn ? 'white' : 'white'}
+              thumbColor={isOn ? 'white' : 'white'}
               ios_backgroundColor="#3e3e3e"
               onValueChange={toggleSwitch}
-              value={notificationOn}
+              value={isOn}
             />
           </View>
 
           {/* If notifications are on, display input to set time */}
-          {notificationOn &&
+          {isOn &&
             <View style={styles.row}>
               <Text style={{ padding: 10 }}>Time</Text>
               {/* placeholder - to update with DateTimePicker */}
-              <Text>{notificationTime.toLocaleTimeString()}</Text>
+              <Text>{time}</Text>
             </View>
           }
 
