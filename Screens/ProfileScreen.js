@@ -1,15 +1,17 @@
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { useState, useEffect } from 'react';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { auth, database } from '../Firebase/firebaseSetup';
 import { getDocument } from '../Firebase/firestoreHelper';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import BreedIcon from '../ReusableComponent/BreedIcon';
-import BreedCounter from '../ReusableComponent/BreedCounter';
 import { collection, getDocs, onSnapshot, query, where } from 'firebase/firestore';
+import { globalStyles } from '../styles';
+
 import NotificationModal from '../ReusableComponent/NotificationModal';
 import CustomModal from '../ReusableComponent/CustomModal';
 import ImageDisplay from '../ReusableComponent/ImageDisplay';
 import ImageModal from '../ReusableComponent/ImageModal';
+import BreedIcon from '../ReusableComponent/BreedIcon';
+import BreedCounter from '../ReusableComponent/BreedCounter';
 
 const ProfileScreen = ({ navigation }) => {
     const [userImageUri, setUserImageUri] = useState('');
@@ -102,10 +104,17 @@ const ProfileScreen = ({ navigation }) => {
         <View style={styles.container}>
             {/* Button for notification settings */}
             <View style={styles.notificationContainer}>
-                <Pressable onPress={() => setShowNotifModal(true)}>
-                    <MaterialCommunityIcons name="bell" size={24} color="blue" />
+                <Pressable
+                    style={({ pressed }) => [
+                        globalStyles.button,
+                        pressed && globalStyles.buttonPressed
+                    ]}
+                    onPress={() => setShowNotifModal(true)}
+                >
+                    <MaterialCommunityIcons name="bell" size={24} color="white" />
                 </Pressable>
             </View>
+            {/* Display notification settings modal on press */}
             <CustomModal showModal={showNotifModal} toggleModal={toggleNotifModal}>
                 <NotificationModal
                     showModal={showNotifModal}
@@ -117,11 +126,14 @@ const ProfileScreen = ({ navigation }) => {
                 />
             </CustomModal>
 
-
             {/* User image */}
             <View style={styles.userImageIcon}>
-                <Pressable onPress={() => setShowEditImageModal(true)}>
-                    {/* Display if user has photo */}
+                <Pressable
+                    style={({ pressed }) => [
+                        pressed && globalStyles.buttonPressed
+                    ]}
+                    onPress={() => setShowEditImageModal(true)}>
+                    {/* Display if user has photo, otherwise show icon */}
                     {userImageUri ? (
                         <ImageDisplay imageUri={userImageUri} displayStyle={styles.userImageIcon} />
                     ) : (
@@ -129,7 +141,7 @@ const ProfileScreen = ({ navigation }) => {
                     )}
                 </Pressable>
             </View>
-
+            {/* Pressing picture displays modal for uploading new picture */}
             <CustomModal showModal={showEditImageModal} toggleModal={toggleEditImageModal}>
                 <ImageModal
                     userImage={userImageUri}
@@ -139,24 +151,27 @@ const ProfileScreen = ({ navigation }) => {
             </CustomModal>
 
             {/* User name */}
-            <Text style={styles.boldText}>
+            <Text style={globalStyles.boldText}>
                 Welcome, {username}
             </Text>
 
             {/* Breed collection progress */}
-            {/* Placeholder - making reusable component */}
             <BreedCounter />
 
             {/* Navigate to breed collection */}
             <Pressable
+                style={({ pressed }) => [
+                    globalStyles.button,
+                    pressed && globalStyles.buttonPressed,
+                    styles.spacer,
+                ]}
                 onPress={() => navigation.navigate('MyBreed')}
             >
-                <Text style={{ color: 'blue' }}>Go to My Breed Collection</Text>
+                <Text style={globalStyles.buttonText}>Go to My Breed Collection</Text>
             </Pressable>
 
             {/* Top 3 breeds */}
-            {/* Placeholder - making reusable component */}
-            <Text style={styles.boldText}>
+            <Text style={globalStyles.boldText}>
                 Top Breeds
             </Text>
             <View style={styles.topBreedIconsContainer}>
@@ -165,7 +180,6 @@ const ProfileScreen = ({ navigation }) => {
                 ))}
             </View>
         </View>
-
     );
 };
 
@@ -181,6 +195,12 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-end',
         padding: 10,
     },
+    button: {
+        backgroundColor: 'blue',
+        padding: 10,
+        borderRadius: 8,
+        margin: 10,
+    },
     userImageIcon: {
         width: 100,
         height: 100,
@@ -193,8 +213,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         padding: 10,
     },
-    boldText: {
-        fontSize: 20,
-        fontWeight: 'bold',
+    spacer: {
+        marginBottom: 15,
     },
 }); 

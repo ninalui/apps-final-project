@@ -2,6 +2,7 @@ import { View, Text, StyleSheet } from 'react-native'
 import React, { useEffect } from 'react'
 import { auth } from '../Firebase/firebaseSetup'
 import { getAllDocuments } from '../Firebase/firestoreHelper'
+import { globalStyles } from '../styles';
 
 export default function BreedCounter() {
   const [breedCount, setBreedCount] = React.useState(0);
@@ -24,7 +25,7 @@ export default function BreedCounter() {
   return (
     <View style={styles.container}>
       {/* API for breed detection uses database that has 120 breeds */}
-      <Text>{breedCount} out of 120 breeds collected</Text>
+      <Text style={globalStyles.normalText}>{breedCount} out of 120 breeds collected</Text>
     </View>
   )
 }

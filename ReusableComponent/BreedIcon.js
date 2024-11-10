@@ -2,6 +2,7 @@ import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
 import ImageDisplay from './ImageDisplay'
 import { Dimensions } from 'react-native';
+import { globalStyles } from '../styles';
 const { width } = Dimensions.get('window');
 
 export default function BreedIcon({ breedImage, breedName }) {
@@ -10,7 +11,7 @@ export default function BreedIcon({ breedImage, breedName }) {
       <View style={styles.breedImage}>
         <ImageDisplay imageUri={breedImage} />
       </View>
-      <Text style={styles.breedText}>{breedName}</Text>
+      <Text style={[globalStyles.normalText, styles.breedText]}>{breedName}</Text>
     </View>
   )
 }
@@ -31,7 +32,6 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   }, 
   breedText: {
-    fontSize: 16,
     padding: 5,
     textAlign: 'center',
   }

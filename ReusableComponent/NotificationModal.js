@@ -3,6 +3,7 @@ import { Alert, StyleSheet, Text, Pressable, View, Switch } from 'react-native';
 import { auth } from '../Firebase/firebaseSetup';
 import { updateDB } from '../Firebase/firestoreHelper';
 import DateOrTimePicker from '../ReusableComponent/DateOrTimePicker';
+import { globalStyles } from '../styles';
 
 export default function NotificationModal({ showModal, toggleModal, notificationOn, setNotificationOn, notificationTime, setNotificationTime }) {
   const [isOn, setIsOn] = useState(notificationOn);
@@ -21,7 +22,7 @@ export default function NotificationModal({ showModal, toggleModal, notification
     // Reset state to initial values (matching database)
     setIsOn(notificationOn);
     setTime(notificationTime);
-    // Alert user to confirm cancel then close modal on confirmation
+    // PRompt user to confirm cancel and close modal
     Alert.alert(
       'Cancel',
       'Are you sure you want to cancel? Any changes will not be saved.',
@@ -63,25 +64,17 @@ export default function NotificationModal({ showModal, toggleModal, notification
     }
 
     // Provide confirm message and close modal
-    Alert.alert(
-      'Save',
-      'Notification settings saved.',
-      [
-        {
-          text: 'OK',
-          onPress: () => toggleModal(),
-        },
-      ],
-    );
+    Alert.alert('Notification settings saved');
+    toggleModal();
   }
 
   return (
     <>
-      <Text style={styles.title}>Notification Settings</Text>
+      <Text style={globalStyles.title}>Notification Settings</Text>
       {/* Toggle notifications on and off */}
-      <View style={styles.row}>
+      <View style={globalStyles.row}>
         <View style={styles.textContainer}>
-          <Text style={styles.text}>
+          <Text style={globalStyles.normalText}>
             Enable Notifications
           </Text>
         </View>
@@ -98,9 +91,9 @@ export default function NotificationModal({ showModal, toggleModal, notification
 
       {/* If notifications are on, display input to set time */}
       {isOn &&
-        <View style={styles.row}>
+        <View style={globalStyles.row}>
           <View style={styles.textContainer}>
-            <Text style={styles.text}>Time</Text>
+            <Text style={globalStyles.normalText}>Time</Text>
           </View>
           <View style={styles.timeInputContainer}>
             <DateOrTimePicker value={time} setValue={setTime} mode='time' />
@@ -109,29 +102,31 @@ export default function NotificationModal({ showModal, toggleModal, notification
       }
 
       {/* Save and cancel buttons */}
-      <View style={styles.row}>
+      <View style={globalStyles.row}>
         <Pressable
           style={({ pressed }) => [
-            styles.button,
-            styles.cancelButton,
-            pressed && styles.buttonPressed
+            globalStyles.button,
+            globalStyles.fullButton,
+            globalStyles.cancelButton,
+            pressed && globalStyles.buttonPressed
           ]}
           onPress={handleCancel}
         >
-          <Text style={styles.buttonText}>
+          <Text style={globalStyles.buttonText}>
             CANCEL
           </Text>
         </Pressable>
 
         <Pressable
           style={({ pressed }) => [
-            styles.button,
-            styles.saveButton,
-            pressed && styles.buttonPressed
+            globalStyles.button,
+            globalStyles.fullButton,
+            globalStyles.saveButton,
+            pressed && globalStyles.buttonPressed
           ]}
           onPress={handleSave}
         >
-          <Text style={styles.buttonText}>
+          <Text style={globalStyles.buttonText}>
             SAVE
           </Text>
         </Pressable>
@@ -141,17 +136,6 @@ export default function NotificationModal({ showModal, toggleModal, notification
 };
 
 const styles = StyleSheet.create({
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 10,
-  },
   textContainer: {
     flex: 1,
   },
@@ -161,38 +145,4 @@ const styles = StyleSheet.create({
   switchContainer: {
     alignItems: 'flex-end',
   },
-  text: {
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  button: {
-    flex: 1,
-    padding: 15,
-    borderRadius: 8,
-    marginHorizontal: 10,
-    alignItems: 'center',
-    elevation: 2,  // Android shadow
-    shadowColor: '#000',  // iOS shadow
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-  buttonPressed: {
-    transform: [{ scale: 0.98 }],
-    opacity: 0.9,
-  },
-  cancelButton: {
-    backgroundColor: '#ff4444',
-  },
-  saveButton: {
-    backgroundColor: '#4CAF50',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  }
 });

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Image, StyleSheet, Text } from "react-native";
+import { Image, StyleSheet } from "react-native";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 export default function ImageDisplay({ imageUri, displayStyle }) {
   const [imageUrl, setImageUrl] = useState(null);
 
+  // Fetch image from Firebase Storage
   useEffect(() => {
     if (imageUri) {
       const fetchImageUrl = async () => {
@@ -16,9 +17,9 @@ export default function ImageDisplay({ imageUri, displayStyle }) {
         } catch (error) {
           console.error("Error fetching image: ", error);
         }
-    };
-    fetchImageUrl();
-  }
+      };
+      fetchImageUrl();
+    }
   }, [imageUri]);
 
   return (
