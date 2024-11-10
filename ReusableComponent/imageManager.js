@@ -1,4 +1,4 @@
-import { View, StyleSheet, Pressable, Image } from 'react-native';
+import { View, StyleSheet, Pressable, Image, Platform, Alert } from 'react-native';
 import React, { useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -15,6 +15,27 @@ export default function ImageManager({ onImageTaken }) {
         return permissionResult.granted;
     };
 
+    const handleImageSelection = () => {
+        Alert.alert(
+            "Select Image",
+            "Choose an option",
+            [
+                {
+                    text: "Take Photo",
+                    onPress: handleCameraPress
+                },
+                {
+                    text: "Choose from Gallery",
+                    onPress: handleGalleryPress
+                },
+                {
+                    text: "Cancel",
+                    style: "cancel"
+                }
+            ]
+        );
+    };
+
     const handleCameraPress = async () => {
         try {
             if (Platform.OS === 'ios') {
@@ -27,6 +48,7 @@ export default function ImageManager({ onImageTaken }) {
 
             const result = await ImagePicker.launchCameraAsync({
                 allowsEditing: true,
+                quality: 1,
             });
 
             if (!result.canceled) {
@@ -40,6 +62,25 @@ export default function ImageManager({ onImageTaken }) {
         }
     };
 
+    const handleGalleryPress = async () => {
+        try {
+            const result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                quality: 1,
+            });
+
+            if (!result.canceled) {
+                const uri = result.assets[0].uri;
+                setImageUri(uri);
+                onImageTaken(uri);
+            }
+        } catch (error) {
+            console.error('Error picking image:', error);
+            Alert.alert("Error", "Failed to pick image. Please try again.");
+        }
+    };
+
     return (
         <View style={styles.container}>
             {!imageUri ? (
@@ -48,9 +89,9 @@ export default function ImageManager({ onImageTaken }) {
                         styles.uploadContainer,
                         pressed && styles.pressed
                     ]}
-                    onPress={handleCameraPress}
+                    onPress={handleImageSelection}
                 >
-                    <MaterialIcons name="camera-alt" size={40} color="#666" />
+                    <MaterialIcons name="add-photo-alternate" size={40} color="#666" />
                 </Pressable>
             ) : (
                 <View style={styles.imagePreviewContainer}>
@@ -60,9 +101,9 @@ export default function ImageManager({ onImageTaken }) {
                     />
                     <Pressable
                         style={styles.changePhotoButton}
-                        onPress={handleCameraPress}
+                        onPress={handleImageSelection}
                     >
-                        <MaterialIcons name="camera-alt" size={24} color="#fff" />
+                        <MaterialIcons name="edit" size={24} color="#fff" />
                     </Pressable>
                 </View>
             )}
