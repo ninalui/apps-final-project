@@ -7,6 +7,7 @@ import BreedIcon from '../ReusableComponent/BreedIcon';
 import BreedCounter from '../ReusableComponent/BreedCounter';
 import { collection, getDocs, onSnapshot, query, where } from 'firebase/firestore';
 import NotificationModal from '../ReusableComponent/NotificationModal';
+import CustomModal from '../ReusableComponent/CustomModal';
 import ImageDisplay from '../ReusableComponent/ImageDisplay';
 
 const ProfileScreen = ({ navigation }) => {
@@ -15,23 +16,23 @@ const ProfileScreen = ({ navigation }) => {
     const [topBreeds, setTopBreeds] = useState([]);
     const currentUser = auth.currentUser.uid;
 
-    const [showModal, setShowModal] = useState(false);
-    function toggleModal() {
-        setShowModal(!showModal);
+    const [showNotifModal, setShowNotifModal] = useState(false);
+    function toggleNotifModal() {
+        setShowNotifModal(!showNotifModal);
     };
     const [notificationOn, setNotificationOn] = useState(false);
     const [notificationTime, setNotificationTime] = useState(new Date());
 
     const createDateFromTimeString = (timeString) => {
         if (!timeString) {
-          return new Date();
+            return new Date();
         }
         const [hours, minutes] = timeString.split(':');
         const date = new Date();
         date.setHours(hours);
         date.setMinutes(minutes);
         return date;
-      };
+    };
 
     // Fetch user data from database
     useEffect(() => {
@@ -95,21 +96,20 @@ const ProfileScreen = ({ navigation }) => {
         <View style={styles.container}>
             {/* Button for notification settings */}
             <View style={styles.notificationContainer}>
-                <Pressable
-                    onPress={() => setShowModal(true)}
-                >
+                <Pressable onPress={() => setShowNotifModal(true)}>
                     <MaterialCommunityIcons name="bell" size={24} color="blue" />
                 </Pressable>
             </View>
-
-            <NotificationModal
-                showModal={showModal}
-                toggleModal={toggleModal}
-                notificationOn={notificationOn}
-                setNotificationOn={setNotificationOn}
-                notificationTime={notificationTime}
-                setNotificationTime={setNotificationTime}
-            />
+            <CustomModal showModal={showNotifModal} toggleModal={toggleNotifModal}>
+                <NotificationModal
+                    showModal={showNotifModal}
+                    toggleModal={toggleNotifModal}
+                    notificationOn={notificationOn}
+                    setNotificationOn={setNotificationOn}
+                    notificationTime={notificationTime}
+                    setNotificationTime={setNotificationTime}
+                />
+            </CustomModal>
 
 
             {/* User image */}

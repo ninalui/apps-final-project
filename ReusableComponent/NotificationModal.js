@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Modal, StyleSheet, Text, Pressable, View, Switch } from 'react-native';
+import { Alert, StyleSheet, Text, Pressable, View, Switch } from 'react-native';
 import { auth } from '../Firebase/firebaseSetup';
 import { updateDB } from '../Firebase/firestoreHelper';
-import DateOrTimePicker from './DateOrTimePicker';
+import DateOrTimePicker from '../ReusableComponent/DateOrTimePicker';
 
 export default function NotificationModal({ showModal, toggleModal, notificationOn, setNotificationOn, notificationTime, setNotificationTime }) {
   const [isOn, setIsOn] = useState(notificationOn);
@@ -76,98 +76,75 @@ export default function NotificationModal({ showModal, toggleModal, notification
   }
 
   return (
-    <Modal
-      animationType='fade'
-      transparent={true}
-      visible={showModal}
-    >
-      <View style={styles.centeredContainer}>
-        <View style={styles.modalContainer}>
-          {/* Toggle notifications on and off */}
-          <View style={styles.row}>
-            <View style={styles.textContainer}>
-              <Text style={styles.text}>
-                Enable Notifications
-              </Text>
-            </View>
-            <View style={styles.switchContainer}>
-              <Switch
-                trackColor={{ false: 'lightgray', true: 'blue' }}
-                thumbColor={isOn ? 'white' : 'white'}
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={toggleSwitch}
-                value={isOn}
-              />
-            </View>
-          </View>
-
-          {/* If notifications are on, display input to set time */}
-          {isOn &&
-            <View style={styles.row}>
-              <View style={styles.textContainer}>
-                <Text style={styles.text}>Time</Text>
-              </View>
-              <View style={styles.timeInputContainer}>
-                <DateOrTimePicker value={time} setValue={setTime} mode='time' />
-              </View>
-            </View>
-          }
-
-          {/* Save and cancel buttons */}
-          <View style={styles.row}>
-            <Pressable
-              style={({ pressed }) => [
-                styles.button,
-                styles.cancelButton,
-                pressed && styles.buttonPressed
-              ]}
-              onPress={handleCancel}
-            >
-              <Text style={styles.buttonText}>
-                CANCEL
-              </Text>
-            </Pressable>
-
-            <Pressable
-              style={({ pressed }) => [
-                styles.button,
-                styles.saveButton,
-                pressed && styles.buttonPressed
-              ]}
-              onPress={handleSave}
-            >
-              <Text style={styles.buttonText}>
-                SAVE
-              </Text>
-            </Pressable>
-          </View>
+    <>
+      <Text style={styles.title}>Notification Settings</Text>
+      {/* Toggle notifications on and off */}
+      <View style={styles.row}>
+        <View style={styles.textContainer}>
+          <Text style={styles.text}>
+            Enable Notifications
+          </Text>
+        </View>
+        <View style={styles.switchContainer}>
+          <Switch
+            trackColor={{ false: 'lightgray', true: 'blue' }}
+            thumbColor={isOn ? 'white' : 'white'}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={toggleSwitch}
+            value={isOn}
+          />
         </View>
       </View>
-    </Modal>
+
+      {/* If notifications are on, display input to set time */}
+      {isOn &&
+        <View style={styles.row}>
+          <View style={styles.textContainer}>
+            <Text style={styles.text}>Time</Text>
+          </View>
+          <View style={styles.timeInputContainer}>
+            <DateOrTimePicker value={time} setValue={setTime} mode='time' />
+          </View>
+        </View>
+      }
+
+      {/* Save and cancel buttons */}
+      <View style={styles.row}>
+        <Pressable
+          style={({ pressed }) => [
+            styles.button,
+            styles.cancelButton,
+            pressed && styles.buttonPressed
+          ]}
+          onPress={handleCancel}
+        >
+          <Text style={styles.buttonText}>
+            CANCEL
+          </Text>
+        </Pressable>
+
+        <Pressable
+          style={({ pressed }) => [
+            styles.button,
+            styles.saveButton,
+            pressed && styles.buttonPressed
+          ]}
+          onPress={handleSave}
+        >
+          <Text style={styles.buttonText}>
+            SAVE
+          </Text>
+        </Pressable>
+      </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  centeredContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  modalContainer: {
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 30,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-    width: '80%',
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
   row: {
     flexDirection: 'row',
