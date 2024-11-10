@@ -2,17 +2,29 @@ import React, { useEffect, useState } from 'react';
 import { Alert, Modal, StyleSheet, Text, Pressable, View, Switch } from 'react-native';
 import { auth } from '../Firebase/firebaseSetup';
 import { updateDB } from '../Firebase/firestoreHelper';
+import DateOrTimePicker from './DateOrTimePicker';
 
 export default function NotificationModal({ showModal, toggleModal, notificationOn, setNotificationOn, notificationTime, setNotificationTime }) {
   const [isOn, setIsOn] = useState(notificationOn);
   const [time, setTime] = useState(notificationTime);
 
+  const createDateFromTimeString = (timeString) => {
+    if (!timeString) {
+      return new Date();
+    }
+    const [hours, minutes] = timeString.split(':');
+    const date = new Date();
+    date.setHours(hours);
+    date.setMinutes(minutes);
+    return date;
+  };
+
   useEffect(() => {
     if (showModal) {
       setIsOn(notificationOn);
-      setTime(notificationTime);
+      setTime(notificationTime instanceof Date ? notificationTime : createDateFromTimeString(notificationTime));
     }
-  }, [showModal, notificationOn, notificationTime]);
+  }, [showModal, notificationOn]);
 
   const toggleSwitch = () => setIsOn(previousState => !previousState);
 
@@ -50,7 +62,6 @@ export default function NotificationModal({ showModal, toggleModal, notification
           notificationOn: isOn,
           notificationTime: formattedTime,
         };
-        console.log(notificationSettings);
         await updateDB(currentUser, notificationSettings, 'users');
         setNotificationOn(isOn);
         setNotificationTime(time);
@@ -103,8 +114,7 @@ export default function NotificationModal({ showModal, toggleModal, notification
           {isOn &&
             <View style={styles.row}>
               <Text style={{ padding: 10 }}>Time</Text>
-              {/* placeholder - to update with DateTimePicker */}
-              <Text>{time}</Text>
+              <DateOrTimePicker value={time} setValue={setTime} mode='time' />
             </View>
           }
 
