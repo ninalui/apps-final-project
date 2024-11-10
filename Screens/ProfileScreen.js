@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { auth } from '../Firebase/firebaseSetup';
 import { getDocument } from '../Firebase/firestoreHelper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import BreedIcon from '../ReusableComponent/BreedIcon';
 
 const ProfileScreen = ({ navigation }) => {
     const [username, setUsername] = useState('');
@@ -66,6 +67,9 @@ const ProfileScreen = ({ navigation }) => {
                 Top Breeds
             </Text>
             <View style={styles.topBreedIconsContainer}>
+                <BreedIcon />
+                <BreedIcon />
+                <BreedIcon />
             </View>
         </View>
 
