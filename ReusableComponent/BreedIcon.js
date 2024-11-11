@@ -4,14 +4,22 @@ import ImageDisplay from './ImageDisplay'
 import { Dimensions } from 'react-native';
 import { globalStyles } from '../styles';
 const { width } = Dimensions.get('window');
+import Octicons from '@expo/vector-icons/Octicons';
 
 export default function BreedIcon({ breedImage, breedName }) {
   return (
     <View style={styles.container}>
       <View style={styles.breedImage}>
-        <ImageDisplay imageUri={breedImage} />
+        {breedImage ? <ImageDisplay imageUri={breedImage} /> : (
+          <View style={styles.mysteryIcon}>
+            <Octicons name="question" size={50} color="black" />
+          </View>)}
       </View>
-      <Text style={[globalStyles.normalText, styles.breedText]}>{breedName}</Text>
+      <View style={{ alignSelf: 'center' }}>
+        <Text style={[globalStyles.normalText, styles.breedText]}>
+          {breedName.includes('Mystery') ? 'Mystery Breed' : breedName}
+        </Text>
+      </View>
     </View>
   )
 }
@@ -30,9 +38,14 @@ const styles = StyleSheet.create({
     height: 70,
     margin: 10,
     marginBottom: 0,
-  }, 
+  },
   breedText: {
     padding: 5,
     textAlign: 'center',
+  },
+  mysteryIcon: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   }
 })
