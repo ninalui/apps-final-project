@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { auth } from '../Firebase/firebaseSetup';
 import { database } from '../Firebase/firebaseSetup';
 import { collection, query, where, getDocs, limit } from 'firebase/firestore';
@@ -44,7 +44,7 @@ const MyBreedScreen = ({ route }) => {
     return (
         <View>
             <BreedCounter />
-            <View>
+            <View style={styles.iconsContainer}>
                 {breedCollection.map((breed) => {
                     return (
                         <BreedIcon key={breed.breedName} breedImage={breed.imageUrl} breedName={breed.breedName} />
@@ -56,3 +56,10 @@ const MyBreedScreen = ({ route }) => {
 };
 
 export default MyBreedScreen;
+
+const styles = StyleSheet.create({
+    iconsContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+    },
+});
