@@ -104,7 +104,7 @@ const ProfileScreen = ({ navigation }) => {
             }
         );
         return () => unsubscribe();
-    }, [currentUser]);
+    }, []);
 
     return (
         <View style={styles.container}>
@@ -162,7 +162,7 @@ const ProfileScreen = ({ navigation }) => {
             </Text>
 
             {/* Breed collection progress */}
-            <BreedCounter />
+            <BreedCounter breedCount={breedCollection.length}/>
 
             {/* Navigate to breed collection */}
             <Pressable
@@ -171,7 +171,7 @@ const ProfileScreen = ({ navigation }) => {
                     pressed && globalStyles.buttonPressed,
                     styles.spacer,
                 ]}
-                onPress={() => navigation.navigate('MyBreed', { breeds: breedCollection })}
+                onPress={() => navigation.navigate('MyBreed', { breeds: breedCollection, breedCount: breedCollection.length })}
             >
                 <Text style={globalStyles.buttonText}>Go to My Breed Collection</Text>
             </Pressable>

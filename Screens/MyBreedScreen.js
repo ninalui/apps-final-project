@@ -8,7 +8,7 @@ import BreedCounter from '../ReusableComponent/BreedCounter';
 import BreedIcon from '../ReusableComponent/BreedIcon';
 
 const MyBreedScreen = ({ route }) => {
-    const { breeds } = route.params;
+    const { breeds, breedCount } = route.params;
     const [breedCollection, setBreedCollection] = useState(breeds);
     const currentUser = auth.currentUser.uid;
 
@@ -52,7 +52,7 @@ const MyBreedScreen = ({ route }) => {
     
     return (
         <View style={styles.container}>
-            <BreedCounter />
+            <BreedCounter breedCount={breedCount} />
             <FlatList
                 data={allBreeds}
                 renderItem={({ item }) => (<BreedIcon breedImage={item.imageUrl} breedName={item.breedName} />)}
