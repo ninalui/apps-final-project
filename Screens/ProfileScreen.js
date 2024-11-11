@@ -17,6 +17,7 @@ const ProfileScreen = ({ navigation }) => {
     const [userImageUri, setUserImageUri] = useState('');
     const [username, setUsername] = useState('');
     const [topBreeds, setTopBreeds] = useState([]);
+    const [breedCollection, setBreedCollection] = useState([]);
     const currentUser = auth.currentUser.uid;
 
     const [showNotifModal, setShowNotifModal] = useState(false);
@@ -72,6 +73,11 @@ const ProfileScreen = ({ navigation }) => {
             collection(database, `users/${currentUser}/breeds`),
             (snapshot) => {
                 const breeds = snapshot.docs.map(doc => doc.data());
+                
+                // Save all breeds to state to show collection
+                const allBreeds = breeds.map(breed => ({ breedName: breed.breedName }));
+                setBreedCollection(allBreeds);
+
                 const sortedBreeds = breeds.sort((a, b) => b.count - a.count).slice(0, 3);
                 const usersTopBreeds = sortedBreeds.map(breed => ({ breedName: breed.breedName }));
 
@@ -165,7 +171,7 @@ const ProfileScreen = ({ navigation }) => {
                     pressed && globalStyles.buttonPressed,
                     styles.spacer,
                 ]}
-                onPress={() => navigation.navigate('MyBreed')}
+                onPress={() => navigation.navigate('MyBreed', { breeds: breedCollection })}
             >
                 <Text style={globalStyles.buttonText}>Go to My Breed Collection</Text>
             </Pressable>
