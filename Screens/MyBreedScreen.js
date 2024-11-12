@@ -6,11 +6,13 @@ import { collection, query, where, getDocs, limit } from 'firebase/firestore';
 
 import BreedCounter from '../ReusableComponent/BreedCounter';
 import BreedIcon from '../ReusableComponent/BreedIcon';
+import Loading from '../ReusableComponent/Loading';
 
 const MyBreedScreen = ({ route }) => {
     const { breeds, breedCount } = route.params;
     const [breedCollection, setBreedCollection] = useState(breeds);
     const currentUser = auth.currentUser.uid;
+    const [loading, setLoading] = useState(true);
 
     // Fetch images for each breed
     useEffect(() => {
@@ -26,18 +28,22 @@ const MyBreedScreen = ({ route }) => {
                     const imageSnapshot = await getDocs(postsQuery);
                     if (!imageSnapshot.empty) {
                         const image = imageSnapshot.docs[0].data().imageUrl;
-                            breedImages[i].imageUrl = image;
-                        } else {
-                            breedImages[i].imageUrl = '';
-                        }
+                        breedImages[i].imageUrl = image;
+                    } else {
+                        breedImages[i].imageUrl = '';
+                    }
                 }
                 setBreedCollection(breedImages);
             } catch (error) {
                 console.error('Error fetching images for collection: ', error);
+            } finally {
+                setLoading(false);
             }
         };
         if (breedCollection.length > 0) {
             fetchImages();
+        } else {
+            setLoading(false);
         }
     }, [breedCollection]);
 
@@ -49,7 +55,13 @@ const MyBreedScreen = ({ route }) => {
     for (let i = 0; i < totalBreedsLeft; i++) {
         allBreeds.push({ breedName: `Mystery Breed ${i}`, imageUrl: '' });
     }
-    
+
+    if (loading) {
+        return (
+            <Loading />
+        );
+    }
+
     return (
         <View style={styles.container}>
             <BreedCounter breedCount={breedCount} />
