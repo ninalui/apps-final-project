@@ -7,7 +7,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { createPost, updateBreedCount } from '../Firebase/firestoreHelper';
 import { Alert } from 'react-native';
 
-const CreatePostScreen = () => {
+const CreatePostScreen = ({ navigation }) => {
     const user = auth.currentUser;
     const [breedResult, setBreedResult] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -83,8 +83,16 @@ const CreatePostScreen = () => {
                 await updateBreedCount(user.uid, breedResult.labelName);
             }
 
-            Alert.alert('Success', 'Post created successfully');
-            // Add navigation logic here if needed
+            Alert.alert('Success', 'Post created successfully', [
+                {
+                    text: 'OK',
+                    onPress: () => {
+                        // Navigate to HomeScreen after user clicks OK
+                        navigation.navigate('Home');
+                    }
+                }
+            ]);
+
 
         } catch (error) {
             console.error('Error saving post:', error);
