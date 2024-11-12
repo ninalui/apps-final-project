@@ -83,16 +83,27 @@ const CreatePostScreen = ({ navigation }) => {
                 await updateBreedCount(user.uid, breedResult.labelName);
             }
 
-            Alert.alert('Success', 'Post created successfully', [
-                {
-                    text: 'OK',
-                    onPress: () => {
-                        // Navigate to HomeScreen after user clicks OK
-                        navigation.navigate('Home');
-                    }
-                }
-            ]);
+            // Reset all states to initial values
+            setBreedResult(null);
+            setIsLoading(false);
+            setDescription('');
+            setDate(new Date());
+            setShowDatePicker(false);
+            setImageUrl(null);
+            setShouldResetImage(true);  // Trigger image reset
 
+            // Reset the shouldResetImage flag after a short delay
+            setTimeout(() => {
+                setShouldResetImage(false);
+            }, 100);
+
+            // Navigate to HomeScreen with the new post data
+            navigation.navigate('Home', {
+                newPost: {
+                    id: postId,
+                    ...postData,
+                }
+            });
 
         } catch (error) {
             console.error('Error saving post:', error);
