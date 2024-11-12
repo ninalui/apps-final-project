@@ -1,7 +1,20 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
 const PostCard = ({ post }) => {
+    const [expanded, setExpanded] = useState(false);
+    const maxLength = 100; // Maximum number of characters to show initially
+
+    // Check if text needs to be truncated
+    const needsTruncation = post.description.length > maxLength;
+
+    // Get display text based on expanded state
+    const displayText = expanded
+        ? post.description
+        : needsTruncation
+            ? post.description.substring(0, maxLength) + '...'
+            : post.description;
+
     return (
         <View style={styles.card}>
             {/* Date */}
@@ -23,8 +36,22 @@ const PostCard = ({ post }) => {
                 </Text>
             )}
 
-            {/* Description */}
-            <Text style={styles.description}>{post.description}</Text>
+            {/* Description with Show More/Less */}
+            <View style={styles.descriptionContainer}>
+                <Text style={styles.description}>
+                    {displayText}
+                </Text>
+                {needsTruncation && (
+                    <TouchableOpacity
+                        onPress={() => setExpanded(!expanded)}
+                        style={styles.showMoreButton}
+                    >
+                        <Text style={styles.showMoreText}>
+                            {expanded ? 'Show Less' : 'Show More'}
+                        </Text>
+                    </TouchableOpacity>
+                )}
+            </View>
 
             {/* Map Placeholder */}
             <View style={styles.mapPlaceholder}>
@@ -66,10 +93,20 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 5,
     },
+    descriptionContainer: {
+        marginBottom: 10,
+    },
     description: {
         fontSize: 14,
-        marginBottom: 10,
         lineHeight: 20,
+    },
+    showMoreButton: {
+        marginTop: 5,
+    },
+    showMoreText: {
+        color: '#007AFF',
+        fontSize: 14,
+        fontWeight: '500',
     },
     mapPlaceholder: {
         height: 100,
