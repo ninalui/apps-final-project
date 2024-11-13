@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
-const PostCard = ({ post }) => {
+const PostCard = ({ post, onPress }) => {
     const [expanded, setExpanded] = useState(false);
     const maxLength = 100; // Maximum number of characters to show initially
 
@@ -16,48 +16,50 @@ const PostCard = ({ post }) => {
             : post.description;
 
     return (
-        <View style={styles.card}>
-            {/* Date */}
-            <Text style={styles.date}>
-                {new Date(post.date).toLocaleDateString()}
-            </Text>
-
-            {/* Image */}
-            <Image
-                source={{ uri: post.imageUrl }}
-                style={styles.image}
-                resizeMode="cover"
-            />
-
-            {/* Breed Info */}
-            {post.breed && (
-                <Text style={styles.breed}>
-                    Breed: {post.breed}
+        <TouchableOpacity onPress={onPress}>
+            <View style={styles.card}>
+                {/* Date */}
+                <Text style={styles.date}>
+                    {new Date(post.date).toLocaleDateString()}
                 </Text>
-            )}
 
-            {/* Description with Show More/Less */}
-            <View style={styles.descriptionContainer}>
-                <Text style={styles.description}>
-                    {displayText}
-                </Text>
-                {needsTruncation && (
-                    <TouchableOpacity
-                        onPress={() => setExpanded(!expanded)}
-                        style={styles.showMoreButton}
-                    >
-                        <Text style={styles.showMoreText}>
-                            {expanded ? 'Show Less' : 'Show More'}
-                        </Text>
-                    </TouchableOpacity>
+                {/* Image */}
+                <Image
+                    source={{ uri: post.imageUrl }}
+                    style={styles.image}
+                    resizeMode="cover"
+                />
+
+                {/* Breed Info */}
+                {post.breed && (
+                    <Text style={styles.breed}>
+                        Breed: {post.breed}
+                    </Text>
                 )}
-            </View>
 
-            {/* Map Placeholder */}
-            <View style={styles.mapPlaceholder}>
-                <Text>Map Location</Text>
+                {/* Description with Show More/Less */}
+                <View style={styles.descriptionContainer}>
+                    <Text style={styles.description}>
+                        {displayText}
+                    </Text>
+                    {needsTruncation && (
+                        <TouchableOpacity
+                            onPress={() => setExpanded(!expanded)}
+                            style={styles.showMoreButton}
+                        >
+                            <Text style={styles.showMoreText}>
+                                {expanded ? 'Show Less' : 'Show More'}
+                            </Text>
+                        </TouchableOpacity>
+                    )}
+                </View>
+
+                {/* Map Placeholder */}
+                <View style={styles.mapPlaceholder}>
+                    <Text>Map Location</Text>
+                </View>
             </View>
-        </View>
+        </TouchableOpacity>
     );
 };
 
