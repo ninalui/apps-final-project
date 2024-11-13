@@ -5,10 +5,37 @@ import { collection, query, orderBy, getDocs } from 'firebase/firestore';
 import { database } from '../Firebase/firebaseSetup';
 import PostCard from '../ReusableComponent/PostCard';
 
-const HomeScreen = ({ route }) => {
+const HomeScreen = ({ navigation, route }) => {
     const [posts, setPosts] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
     const user = auth.currentUser;
+
+    const handlePostPress = (post) => {
+        navigation.navigate('CreatePost', {
+            isEditing: true,
+            existingPost: {
+                ...post,
+                date: post.date.toISOString(),  // Convert Date to string
+                createdAt: post.createdAt.toISOString(),
+            }
+        });
+    };
+
+    useEffect(() => {
+        if (route.params?.newPost) {
+            setPosts(currentPosts => [route.params.newPost, ...currentPosts]);
+            route.params.newPost = undefined;
+        } else if (route.params?.updatedPost) {
+            setPosts(currentPosts =>
+                currentPosts.map(post =>
+                    post.id === route.params.updatedPost.id
+                        ? route.params.updatedPost
+                        : post
+                )
+            );
+            route.params.updatedPost = undefined;
+        }
+    }, [route.params?.newPost, route.params?.updatedPost]);
 
     // Handle new post from navigation params
     useEffect(() => {
@@ -68,7 +95,10 @@ const HomeScreen = ({ route }) => {
             >
                 {posts.length > 0 ? (
                     posts.map((post) => (
-                        <PostCard key={post.id} post={post} />
+                        <PostCard
+                            key={post.id}
+                            post={post}
+                            onPress={() => handlePostPress(post)} />
                     ))
                 ) : (
                     <Text style={styles.noPostsText}>No posts yet</Text>
