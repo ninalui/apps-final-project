@@ -4,7 +4,7 @@ import ImageManager from '../ReusableComponent/imageManager';
 import DateOrTimePicker from '../ReusableComponent/DateOrTimePicker';
 import { storage, auth } from '../Firebase/firebaseSetup';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import { createPost, updateBreedCount, updatePost } from '../Firebase/firestoreHelper';
+import { createPost, updateBreedCount, updatePost, updateBreedCountOnEdit } from '../Firebase/firestoreHelper';
 import { Alert } from 'react-native';
 
 const CreatePostScreen = ({ navigation, route }) => {
@@ -58,6 +58,7 @@ const CreatePostScreen = ({ navigation, route }) => {
             );
         }
     };
+
     const handleSave = async () => {
         if (!user) {
             Alert.alert('Error', 'You must be logged in to create a post');
@@ -91,6 +92,15 @@ const CreatePostScreen = ({ navigation, route }) => {
 
             let postId;
             if (isEditing) {
+                // Update breed counts if the breed has changed
+                if (existingPost.breed !== breedResult?.labelName) {
+                    await updateBreedCountOnEdit(
+                        user.uid,
+                        existingPost.breed,
+                        breedResult?.labelName
+                    );
+                }
+
                 // Update existing post
                 postId = existingPost.id;
                 await updatePost(user.uid, postId, postData);
@@ -105,6 +115,8 @@ const CreatePostScreen = ({ navigation, route }) => {
                 }
             }
 
+
+
             // Reset all states to initial values
             setBreedResult(null);
             setIsLoading(false);
@@ -112,12 +124,10 @@ const CreatePostScreen = ({ navigation, route }) => {
             setDate(new Date());
             setImageUrl(null);
             setShouldResetImage(true);  // Trigger image reset
-
             // Reset the shouldResetImage flag after a short delay
             setTimeout(() => {
                 setShouldResetImage(false);
             }, 100);
-
             // Navigate to HomeScreen with the new post data
             navigation.navigate('MyPosts', {
                 updatedPost: isEditing ? {
@@ -133,12 +143,12 @@ const CreatePostScreen = ({ navigation, route }) => {
                     createdAt: postData.createdAt.toISOString()
                 } : undefined
             });
-
         } catch (error) {
             console.error('Error saving post:', error);
             Alert.alert('Error', 'Failed to save post. Please try again.');
         }
     };
+
 
     // Update the screen title based on mode
     useEffect(() => {
