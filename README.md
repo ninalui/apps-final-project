@@ -16,7 +16,7 @@ Team members: Nina Lui, Shuying Du
 <img src="screenshots/breed_collection.PNG" width="300" />
 </div>
 
-##### Leaderboard:
+##### Leaderboard
 <div align="center">
 <img src="screenshots/leaderboard.PNG" width="300" />
 </div>
@@ -77,7 +77,7 @@ Shuying:
 4. Notification Subcollection (Nested under each user document)
    We will implement it in the following iteration
 
-##### explain which of the CRUD operations are implemented on which collections
+##### CRUD operations
 1. Users Collection:
     - Create: writeUserToDB() - Creates new user document with custom ID
     - Read: getDocument() - Fetches user data (used in ProfileScreen)
