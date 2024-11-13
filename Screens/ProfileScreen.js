@@ -8,10 +8,10 @@ import { globalStyles } from '../styles';
 
 import NotificationModal from '../ReusableComponent/NotificationModal';
 import CustomModal from '../ReusableComponent/CustomModal';
-import ImageDisplay from '../ReusableComponent/ImageDisplay';
 import ImageModal from '../ReusableComponent/ImageModal';
 import BreedIcon from '../ReusableComponent/BreedIcon';
 import BreedCounter from '../ReusableComponent/BreedCounter';
+import UserImageIcon from '../ReusableComponent/UserImageIcon';
 
 const ProfileScreen = ({ navigation }) => {
     const [userImageUri, setUserImageUri] = useState('');
@@ -73,7 +73,7 @@ const ProfileScreen = ({ navigation }) => {
             collection(database, `users/${currentUser}/breeds`),
             (snapshot) => {
                 const breeds = snapshot.docs.map(doc => doc.data());
-                
+
                 // Save all breeds to state to show collection
                 const allBreeds = breeds.map(breed => ({ breedName: breed.breedName }));
                 setBreedCollection(allBreeds);
@@ -133,18 +133,14 @@ const ProfileScreen = ({ navigation }) => {
             </CustomModal>
 
             {/* User image */}
-            <View style={styles.userImageIcon}>
+            <View>
                 <Pressable
                     style={({ pressed }) => [
                         pressed && globalStyles.buttonPressed
                     ]}
                     onPress={() => setShowEditImageModal(true)}>
                     {/* Display if user has photo, otherwise show icon */}
-                    {userImageUri ? (
-                        <ImageDisplay imageUri={userImageUri} displayStyle={styles.userImageIcon} />
-                    ) : (
-                        <MaterialCommunityIcons name="account" size={75} color="black" />
-                    )}
+                    <UserImageIcon userImageUri={userImageUri} />
                 </Pressable>
             </View>
             {/* Pressing picture displays modal for uploading new picture */}
@@ -206,14 +202,6 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 8,
         margin: 10,
-    },
-    userImageIcon: {
-        width: 100,
-        height: 100,
-        borderRadius: 100,
-        borderWidth: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
     },
     topBreedIconsContainer: {
         flexDirection: 'row',
