@@ -53,31 +53,38 @@ const LeaderboardScreen = ({ navigation }) => {
         return unsubscribe;
     }, []);
 
-return (
-    <View style={styles.container}>
-        <FlatList
-            data={users}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item, index }) => (
-                // Press to navigate to (other) user's profile screen
-                <Pressable>
-                    <View style={styles.rankingContainer}>
-                        <Text style={globalStyles.boldText}>{index + 1}.</Text>
-                        <View style={styles.userContainer}>
-                            {/* Display user's image, post count, and breed count */}
-                            <UserImageIcon userImageUri={item.userImageUri} />
-                            <View style={styles.textContainer}>
-                                <Text style={globalStyles.boldText}>{item.username}</Text>
-                                <Text style={globalStyles.normalText}>Breeds Collected: {item.breedsCount}</Text>
-                                <Text style={globalStyles.normalText}>Posts: {item.postsCount}</Text>
+    return (
+        <View style={styles.container}>
+            <FlatList
+                data={users}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item, index }) => (
+                    // Press to navigate to (other) user's profile screen
+                    <Pressable
+                        onPress={() => navigation.navigate('OtherProfile', {
+                            userId: item.id,
+                            userImage: item.userImageUri,
+                            username: item.username,
+                            breedsCount: item.breedsCount,
+                        })}
+                    >
+                        <View style={styles.rankingContainer}>
+                            <Text style={globalStyles.boldText}>{index + 1}.</Text>
+                            <View style={styles.userContainer}>
+                                {/* Display user's image, post count, and breed count */}
+                                <UserImageIcon userImageUri={item.userImageUri} />
+                                <View style={styles.textContainer}>
+                                    <Text style={globalStyles.boldText}>{item.username}</Text>
+                                    <Text style={globalStyles.normalText}>Breeds Collected: {item.breedsCount}</Text>
+                                    <Text style={globalStyles.normalText}>Posts: {item.postsCount}</Text>
+                                </View>
                             </View>
                         </View>
-                    </View>
-                </Pressable>
-            )}
-        />
-    </View>
-);
+                    </Pressable>
+                )}
+            />
+        </View>
+    );
 };
 
 export default LeaderboardScreen;
