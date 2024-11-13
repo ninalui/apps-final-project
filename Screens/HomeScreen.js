@@ -12,13 +12,15 @@ const HomeScreen = ({ navigation, route }) => {
     const user = auth.currentUser;
 
     const handlePostPress = (post) => {
+        const postToEdit = {
+            ...post,
+            date: post.date instanceof Date ? post.date : new Date(post.date),
+            createdAt: post.createdAt instanceof Date ? post.createdAt : new Date(post.createdAt)
+        };
+
         navigation.navigate('CreatePost', {
             isEditing: true,
-            existingPost: {
-                ...post,
-                date: post.date.toISOString(),  // Convert Date to string
-                createdAt: post.createdAt.toISOString(),
-            }
+            existingPost: postToEdit
         });
     };
 
