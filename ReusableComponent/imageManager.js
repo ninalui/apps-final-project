@@ -3,15 +3,20 @@ import React, { useState, useEffect } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import { MaterialIcons } from '@expo/vector-icons';
 
-export default function ImageManager({ onImageTaken, shouldReset }) {
+export default function ImageManager({ onImageTaken, shouldReset, existingImageUrl }) {
     const [permission, requestPermission] = ImagePicker.useCameraPermissions();
-    const [imageUri, setImageUri] = useState(null);
+    const [imageUri, setImageUri] = useState(existingImageUrl || null);
 
     useEffect(() => {
         if (shouldReset) {
             setImageUri(null);
         }
     }, [shouldReset]);
+
+    useEffect(() => {
+        // Update imageUri when existingImageUrl changes
+        setImageUri(existingImageUrl);
+    }, [existingImageUrl]);
 
     const verifyPermission = async () => {
         if (permission?.granted) {
@@ -54,7 +59,6 @@ export default function ImageManager({ onImageTaken, shouldReset }) {
 
             const result = await ImagePicker.launchCameraAsync({
                 allowsEditing: true,
-                quality: 1,
             });
 
             if (!result.canceled) {
@@ -73,7 +77,6 @@ export default function ImageManager({ onImageTaken, shouldReset }) {
             const result = await ImagePicker.launchImageLibraryAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.Images,
                 allowsEditing: true,
-                quality: 1,
             });
 
             if (!result.canceled) {
