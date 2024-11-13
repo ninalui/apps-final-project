@@ -16,6 +16,18 @@ export async function createPost(userId, postData) {
     }
 }
 
+// Function to update posts
+export async function updatePost(userId, postId, postData) {
+    try {
+        const postRef = doc(database, 'users', userId, 'posts', postId);
+        await updateDoc(postRef, postData);
+        return postId;
+    } catch (error) {
+        console.error('Error updating post: ', error);
+        throw error;
+    }
+}
+
 // Update or create breed count in breeds subcollection
 export async function updateBreedCount(userId, breedName) {
     try {
