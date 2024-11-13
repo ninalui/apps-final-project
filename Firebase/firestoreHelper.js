@@ -124,3 +124,14 @@ export async function deleteFromDB(docID, collectionName) {
         console.error('Error deleting document: ', error);
     }
 }
+
+// Get count of documents in a collection
+export async function getCollectionCount(collectionPath) {
+    try {
+        const querySnapshot = await getDocs(collection(database, collectionPath));
+        return querySnapshot.size;
+    } catch (error) {
+        console.error('Error getting collection count: ', error);
+        return 0;
+    }
+}
