@@ -4,6 +4,7 @@ import { auth } from '../Firebase/firebaseSetup';
 import { collection, query, orderBy, getDocs } from 'firebase/firestore';
 import { database } from '../Firebase/firebaseSetup';
 import PostCard from '../ReusableComponent/PostCard';
+import { deletePost } from '../Firebase/firestoreHelper';
 
 const HomeScreen = ({ navigation, route }) => {
     const [posts, setPosts] = useState([]);
@@ -19,6 +20,17 @@ const HomeScreen = ({ navigation, route }) => {
                 createdAt: post.createdAt.toISOString(),
             }
         });
+    };
+
+    const handleDeletePost = async (postId) => {
+        try {
+            await deletePost(user.uid, postId);
+            // Update local state to remove the deleted post
+            setPosts(currentPosts => currentPosts.filter(post => post.id !== postId));
+        } catch (error) {
+            console.error('Error deleting post:', error);
+            Alert.alert('Error', 'Failed to delete post. Please try again.');
+        }
     };
 
     useEffect(() => {
@@ -98,7 +110,8 @@ const HomeScreen = ({ navigation, route }) => {
                         <PostCard
                             key={post.id}
                             post={post}
-                            onPress={() => handlePostPress(post)} />
+                            onPress={() => handlePostPress(post)}
+                            onDelete={handleDeletePost} />
                     ))
                 ) : (
                     <Text style={styles.noPostsText}>No posts yet</Text>
