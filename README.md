@@ -25,15 +25,59 @@ Nina:
 Shuying: 
 1. Setting up the initial framework of the app, including the basic navigation stacks and the sign-in/sign-up pages.
 2. Responsible for the CreatePost screen, which involved:
-    - Designing the interface for creating and editing posts.
-    - Implementing CRUD operations to save new data.
-    - Implementing CRUD operations to update existing data.
-    - Integrating camera access for media uploads.
-    - Integrating the external API to detect dog breeds.
+    - Integrated Firebase Storage for image upload and management
+    - Implemented Nyckel API integration for automatic dog breed detection
+    - Built form validation and error handling for post submissions
+    - Created real-time data synchronization with Firestore database
+    - Added image preview and breed detection result display
 3. Responsible for the Home screen, which involved:
-    - Implementing CRUD operations to fetch and display user’s posts.
-    - Implementing CRUD operations to update user’s posts.
-    - Adding navigation functionality to the edit post screen.
+    - Created a scrollable feed of user posts with custom PostCard components
+    - Implemented pull-to-refresh functionality for content updates
+    - Implemented CRUD operations for post management
+    - Developed post-editing navigation with data persistence
+    - Implemented real-time post updates using Firestore listeners
 
 #### Data Model and 3 collections
-explain which of the CRUD operations are implemented on which collections
+##### Data Model
+1. Users Collection (Root collection containing user documents)
+   - Document ID: User's UID from Firebase Auth
+   - Fields: username, photoURL
+2. Posts Subcollection (Nested under each user document)
+   - Document ID: Auto-generated
+   - Fields:
+     imageUrl: URL of uploaded image
+     description: Post text
+     date: User-selected date
+     location: Object containing coordinates
+     breed: Detected dog breed
+     confidence: Breed detection confidence
+     createdAt: Timestamp of post creation
+3. Breeds Subcollection (Nested under each user document)
+    - Document ID: Breed name
+    - Fields:
+      breedName: Name of dog breed
+      count: Number of posts with this breed
+4. Notification Subcollection (Nested under each user document)
+   We will implement it in the following iteration
+
+##### explain which of the CRUD operations are implemented on which collections
+1. Users Collection:
+  - Create: writeUserToDB() - Creates new user document with custom ID
+  - Read: getDocument() - Fetches user data (used in ProfileScreen)
+  - Update: updateDB() - Updates user data
+
+2. Posts subcollection:
+   - Create: createPost() - Creates new post in user's posts subcollection
+   - Read:
+     fetchPosts() in HomeScreen - Fetches all posts for a user
+     Query in MyBreedScreen - Fetches posts filtered by breed
+   - Update: updatePost() - Updates existing post
+   - Delete: deletePost() - Deletes specific post
+3. Breeds subcollection:
+   - Create: updateBreedCount() - Creates new breed document if doesn't exist
+   - Read:
+      Query in ProfileScreen - Fetches all breeds for top breeds display
+      Query in MyBreedScreen - Fetches breed collection
+   - Update: updateBreedCount() - Increments breed count when new post is created
+
+
