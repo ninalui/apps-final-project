@@ -135,3 +135,41 @@ export async function getCollectionCount(collectionPath) {
         return 0;
     }
 }
+
+
+// Delete a post and update breed count
+export async function deletePost(userId, postId) {
+    try {
+        // First get the post to know which breed to decrement
+        const postRef = doc(database, 'users', userId, 'posts', postId);
+        const postSnap = await getDoc(postRef);
+        const postData = postSnap.data();
+
+        // Delete the post
+        await deleteDoc(postRef);
+
+        // If post had a breed, decrement its count
+        if (postData?.breed) {
+            const breedRef = doc(database, 'users', userId, 'breeds', postData.breed);
+            const breedSnap = await getDoc(breedRef);
+
+            if (breedSnap.exists()) {
+                const currentCount = breedSnap.data().count;
+                if (currentCount <= 1) {
+                    // If this was the last post with this breed, delete the breed document
+                    await deleteDoc(breedRef);
+                } else {
+                    // Otherwise decrement the count
+                    await updateDoc(breedRef, {
+                        count: increment(-1)
+                    });
+                }
+            }
+        }
+
+        return true;
+    } catch (error) {
+        console.error('Error deleting post:', error);
+        throw error;
+    }
+}

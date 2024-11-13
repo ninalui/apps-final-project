@@ -27,35 +27,37 @@ const CreatePostScreen = ({ navigation, route }) => {
 
 
     const handleCancel = () => {
-        Alert.alert(
-            "Cancel Post",
-            "Are you sure you want to cancel? All entered information will be lost.",
-            [
-                {
-                    text: "No",
-                    style: "cancel"
-                },
-                {
-                    text: "Yes",
-                    onPress: () => {
-                        // Reset all states to initial values
-                        setBreedResult(null);
-                        setIsLoading(false);
-                        setDescription('');
-                        setDate(new Date());
-                        setImageUrl(null);
-                        setShouldResetImage(true);  // Trigger image reset
+        if (isEditing) {
+            navigation.goBack();
+        } else {
+            Alert.alert(
+                "Cancel Post",
+                "Are you sure you want to cancel? All entered information will be lost.",
+                [
+                    {
+                        text: "No",
+                        style: "cancel"
+                    },
+                    {
+                        text: "Yes",
+                        onPress: () => {
+                            // Reset all states to initial values
+                            setBreedResult(null);
+                            setIsLoading(false);
+                            setDescription('');
+                            setDate(new Date());
+                            setImageUrl(null);
+                            setShouldResetImage(true);
 
-                        // Reset the shouldResetImage flag after a short delay
-                        setTimeout(() => {
-                            setShouldResetImage(false);
-                        }, 100);
+                            setTimeout(() => {
+                                setShouldResetImage(false);
+                            }, 100);
+                        }
                     }
-                }
-            ]
-        );
+                ]
+            );
+        }
     };
-
     const handleSave = async () => {
         if (!user) {
             Alert.alert('Error', 'You must be logged in to create a post');
@@ -64,6 +66,11 @@ const CreatePostScreen = ({ navigation, route }) => {
 
         if (!imageUrl || !description || !date) {
             Alert.alert('Error', 'Please fill in all required fields');
+            return;
+        }
+
+        if (breedResult?.labelName === "Not a Dog!") {
+            Alert.alert('Error', 'Please upload a picture of a dog!');
             return;
         }
 
