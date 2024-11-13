@@ -123,13 +123,13 @@ const CreatePostScreen = ({ navigation, route }) => {
                 updatedPost: isEditing ? {
                     id: postId,
                     ...postData,
-                    date: date.toISOString(),
+                    date: date,
                     createdAt: postData.createdAt?.toISOString(),
                 } : undefined,
                 newPost: !isEditing ? {
                     id: postId,
                     ...postData,
-                    date: date.toISOString(),
+                    date: date,
                     createdAt: postData.createdAt?.toISOString(),
                 } : undefined
             });
