@@ -2,7 +2,24 @@
 ### CS5520 Final Project
 Team members: Nina Lui, Shuying Du
 
-#### Current state of the application:
+#### Current state of the application
+##### Post screens (Home and Creating/Editing)
+<div align="center">
+    <img src="screenshots/posts.PNG" width="300"/>
+    <img src="screenshots/create_post.PNG" width="300" /> 
+    <img src="screenshots/create_post_2.PNG" width="300" />
+</div>
+
+##### Profile and Breed Collection
+<div align="center">
+<img src="screenshots/profile.PNG" width="300" />
+<img src="screenshots/breed_collection.PNG" width="300" />
+</div>
+
+##### Leaderboard
+<div align="center">
+<img src="screenshots/leaderboard.PNG" width="300" />
+</div>
 
 #### Contribution 
 
@@ -60,24 +77,25 @@ Shuying:
 4. Notification Subcollection (Nested under each user document)
    We will implement it in the following iteration
 
-##### explain which of the CRUD operations are implemented on which collections
+##### CRUD operations
 1. Users Collection:
-  - Create: writeUserToDB() - Creates new user document with custom ID
-  - Read: getDocument() - Fetches user data (used in ProfileScreen)
-  - Update: updateDB() - Updates user data
+    - Create: writeUserToDB() - Creates new user document with custom ID
+    - Read: getDocument() - Fetches user data (used in ProfileScreen)
+    - Update: updateDB() - Updates user data (for notification settings and changing image)
 
 2. Posts subcollection:
    - Create: createPost() - Creates new post in user's posts subcollection
    - Read:
-     fetchPosts() in HomeScreen - Fetches all posts for a user
-     Query in MyBreedScreen - Fetches posts filtered by breed
+     - fetchPosts() in HomeScreen - Fetches all posts for a user
+     - Query in MyBreedScreen - Fetches posts filtered by breed
+     - getCollectionCount() in Leaderboard - Fetches all posts and gets count
    - Update: updatePost() - Updates existing post
    - Delete: deletePost() - Deletes specific post
+
 3. Breeds subcollection:
    - Create: updateBreedCount() - Creates new breed document if doesn't exist
    - Read:
-      Query in ProfileScreen - Fetches all breeds for top breeds display
-      Query in MyBreedScreen - Fetches breed collection
-   - Update: updateBreedCount() - Increments breed count when new post is created
-
-
+      - Query in ProfileScreen - Fetches all breeds for top breeds display
+      - Query in MyBreedScreen - Fetches breed collection
+      - getCollectionCount() in Leaderboard - Fetches all breeds and gets count
+   - Update: updateBreedCount() - Updates breed count, increments when new post is made and decrements when post is deleted
