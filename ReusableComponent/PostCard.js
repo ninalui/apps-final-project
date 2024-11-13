@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 
-const PostCard = ({ post, onPress }) => {
+const PostCard = ({ post, onPress, onDelete }) => {
     const [expanded, setExpanded] = useState(false);
     const maxLength = 100; // Maximum number of characters to show initially
 
@@ -15,9 +16,36 @@ const PostCard = ({ post, onPress }) => {
             ? post.description.substring(0, maxLength) + '...'
             : post.description;
 
+    const handleDelete = () => {
+        Alert.alert(
+            "Delete Post",
+            "Are you sure you want to delete this post?",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel"
+                },
+                {
+                    text: "Delete",
+                    onPress: () => onDelete(post.id),
+                    style: "destructive"
+                }
+            ]
+        );
+    };
+
     return (
-        <TouchableOpacity onPress={onPress}>
-            <View style={styles.card}>
+        <View style={styles.card}>
+            <TouchableOpacity onPress={onPress} activeOpacity={0.9}>
+                {/* Delete button */}
+                <TouchableOpacity
+                    style={styles.deleteButton}
+                    onPress={handleDelete}
+                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                >
+                    <MaterialIcons name="delete" size={24} color="#FF4444" />
+                </TouchableOpacity>
+
                 {/* Date */}
                 <Text style={styles.date}>
                     {new Date(post.date).toLocaleDateString()}
@@ -58,13 +86,31 @@ const PostCard = ({ post, onPress }) => {
                 <View style={styles.mapPlaceholder}>
                     <Text>Map Location</Text>
                 </View>
-            </View>
-        </TouchableOpacity>
+            </TouchableOpacity>
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
+    deleteButton: {
+        position: 'absolute',
+        top: -4,
+        right: -8,
+        zIndex: 1,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 5,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
     card: {
+        position: 'relative',
         backgroundColor: 'white',
         borderRadius: 15,
         padding: 15,
