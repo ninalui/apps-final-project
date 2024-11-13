@@ -5,9 +5,11 @@ import { database } from '../Firebase/firebaseSetup';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { getCollectionCount } from '../Firebase/firestoreHelper';
 import UserImageIcon from '../ReusableComponent/UserImageIcon';
+import Loading from '../ReusableComponent/Loading';
 
 const LeaderboardScreen = ({ navigation }) => {
     const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const fetchUserData = async (snapshot) => {
         const allUsers = [];
@@ -48,10 +50,19 @@ const LeaderboardScreen = ({ navigation }) => {
                 }
             } catch (error) {
                 console.error('Error fetching user data: ', error);
+            } finally {
+                setLoading(false);
             }
         });
         return unsubscribe;
     }, []);
+
+    if (loading) {
+        return (
+            <Loading />
+        );
+    }
+
 
     return (
         <View style={styles.container}>
