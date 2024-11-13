@@ -7,7 +7,7 @@ import { auth } from './Firebase/firebaseSetup';  // Import your Firebase auth
 // Import screen components
 import HomeScreen from './Screens/HomeScreen';
 import MapScreen from './Screens/MapScreen';
-import PostScreen from './Screens/CreatePostScreen';
+import CreatePostScreen from './Screens/CreatePostScreen';
 import LeaderboardScreen from './Screens/LeaderboardScreen';
 import ProfileScreen from './Screens/ProfileScreen';
 import MyBreedScreen from './Screens/MyBreedScreen';
@@ -15,8 +15,24 @@ import Login from './Screens/Login';
 import Signup from './Screens/Signup';
 
 const ProfileStack = createNativeStackNavigator();
+const HomeStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const AuthStack = createNativeStackNavigator();
+
+function HomeStackScreen() {
+  return (
+    <HomeStack.Navigator>
+      <HomeStack.Screen name="MyPosts" component={HomeScreen} options={{ title: 'My Posts' }} />
+      <HomeStack.Screen
+        name="CreatePost"
+        component={CreatePostScreen}
+        options={({ route }) => ({
+          title: route.params?.isEditing ? 'Edit Post' : 'New Post'
+        })}
+      />
+    </HomeStack.Navigator>
+  );
+}
 
 function ProfileStackScreen() {
   return (
@@ -30,9 +46,13 @@ function ProfileStackScreen() {
 function AppStack() {
   return (
     <Tab.Navigator initialRouteName="Profile">
-      <Tab.Screen name="Home" component={HomeScreen} options={{ title: 'Home' }} />
+      <Tab.Screen
+        name="Home"
+        component={HomeStackScreen}
+        options={{ headerShown: false }}  // Hide header since HomeStack has its own
+      />
       <Tab.Screen name="Map" component={MapScreen} options={{ title: 'HotSpots' }} />
-      <Tab.Screen name="Post" component={PostScreen} options={{ title: 'New Post' }} />
+      <Tab.Screen name="Post" component={CreatePostScreen} options={{ title: 'New Post' }} />
       <Tab.Screen name="Leaderboard" component={LeaderboardScreen} options={{ title: 'Leader Board' }} />
       <Tab.Screen name="Profile" component={ProfileStackScreen} options={{ headerShown: false }} />
     </Tab.Navigator>

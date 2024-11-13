@@ -1,21 +1,29 @@
 import { View, Text, StyleSheet, TextInput, Pressable, ScrollView } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ImageManager from '../ReusableComponent/imageManager';
-import DatePicker from '../ReusableComponent/DatePicker';
+import DateOrTimePicker from '../ReusableComponent/DateOrTimePicker';
 import { storage, auth } from '../Firebase/firebaseSetup';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import { createPost, updateBreedCount } from '../Firebase/firestoreHelper';
+import { createPost, updateBreedCount, updatePost } from '../Firebase/firestoreHelper';
 import { Alert } from 'react-native';
 
-const CreatePostScreen = () => {
+const CreatePostScreen = ({ navigation, route }) => {
+    const isEditing = route.params?.isEditing || false;
+    const existingPost = route.params?.existingPost;
+
     const user = auth.currentUser;
-    const [breedResult, setBreedResult] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
-    const [description, setDescription] = useState('');
-    const [date, setDate] = useState(new Date());
-    const [showDatePicker, setShowDatePicker] = useState(false);
-    const [imageUrl, setImageUrl] = useState(null);
     const [shouldResetImage, setShouldResetImage] = useState(false);
+    const [breedResult, setBreedResult] = useState(existingPost?.breed ? {
+        labelName: existingPost.breed,
+        confidence: existingPost.confidence
+    } : null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [description, setDescription] = useState(existingPost?.description || '');
+    const [date, setDate] = useState(
+        existingPost?.date ? new Date(existingPost.date) : new Date()
+    );
+    const [imageUrl, setImageUrl] = useState(existingPost?.imageUrl || null);
+
 
 
     const handleCancel = () => {
@@ -35,7 +43,6 @@ const CreatePostScreen = () => {
                         setIsLoading(false);
                         setDescription('');
                         setDate(new Date());
-                        setShowDatePicker(false);
                         setImageUrl(null);
                         setShouldResetImage(true);  // Trigger image reset
 
@@ -64,33 +71,74 @@ const CreatePostScreen = () => {
             const postData = {
                 imageUrl,
                 description,
-                date,
+                date: date,
                 location: {
                     latitude: 0,
                     longitude: 0
                 },
-                createdAt: new Date(),
                 ...(breedResult && {
                     breed: breedResult.labelName,
                     confidence: breedResult.confidence
                 })
             };
-            // Create post
-            const postId = await createPost(user.uid, postData);
 
-            // Update breed count if breed was detected
-            if (breedResult?.labelName) {
-                await updateBreedCount(user.uid, breedResult.labelName);
+            let postId;
+            if (isEditing) {
+                // Update existing post
+                postId = existingPost.id;
+                await updatePost(user.uid, postId, postData);
+            } else {
+                // Create new post
+                postData.createdAt = new Date();
+                postId = await createPost(user.uid, postData);
+
+                // Update breed count only for new posts
+                if (breedResult?.labelName) {
+                    await updateBreedCount(user.uid, breedResult.labelName);
+                }
             }
 
-            Alert.alert('Success', 'Post created successfully');
-            // Add navigation logic here if needed
+            // Reset all states to initial values
+            setBreedResult(null);
+            setIsLoading(false);
+            setDescription('');
+            setDate(new Date());
+            setImageUrl(null);
+            setShouldResetImage(true);  // Trigger image reset
+
+            // Reset the shouldResetImage flag after a short delay
+            setTimeout(() => {
+                setShouldResetImage(false);
+            }, 100);
+
+            // Navigate to HomeScreen with the new post data
+            navigation.navigate('MyPosts', {
+                updatedPost: isEditing ? {
+                    id: postId,
+                    ...postData,
+                    date: date.toISOString(),
+                    createdAt: postData.createdAt?.toISOString(),
+                } : undefined,
+                newPost: !isEditing ? {
+                    id: postId,
+                    ...postData,
+                    date: date.toISOString(),
+                    createdAt: postData.createdAt?.toISOString(),
+                } : undefined
+            });
 
         } catch (error) {
             console.error('Error saving post:', error);
             Alert.alert('Error', 'Failed to save post. Please try again.');
         }
     };
+
+    // Update the screen title based on mode
+    useEffect(() => {
+        navigation.setOptions({
+            title: isEditing ? 'Edit Post' : 'New Post'
+        });
+    }, [isEditing]);
 
 
     const handleImageTaken = async (uri) => {
@@ -115,7 +163,7 @@ const CreatePostScreen = () => {
             const apiResponse = await fetch('https://www.nyckel.com/v1/functions/dog-breed-identifier/invoke', {
                 method: 'POST',
                 headers: {
-                    'Authorization': 'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJuYmYiOjE3MzEyMTUzMTUsImV4cCI6MTczMTIxODkxNSwiaXNzIjoiaHR0cHM6Ly93d3cubnlja2VsLmNvbSIsImNsaWVudF9pZCI6IjI4dTd0dGM0bjZiZXkzb2ZzdjlsZXdrcmxrb25zajk1IiwianRpIjoiOURDOTI3NEEwNkMwODVGMjhDNkExMkFBODYxRkExMDIiLCJpYXQiOjE3MzEyMTUzMTUsInNjb3BlIjpbImFwaSJdfQ.YVR9XKO-eWASv0Rg8zzjB_4tdqKmsZbXPC9Cuak12K_B2yNIediSYcMeuDXfIY8SzmQ1HFCRs24egnXajVW8GhU9UzLPRACM3_ycl6B2yUpQzm8L9UAnGId7V0IDN0zgdYHEnbWOo8WMKyZsZEt53vwIrzvgkzW-pk6PvB7TEEFsEDL72unFdN9mWvUUEaU25_b6r9fhXa7OTO_gkf0VFlTlu4-iAySjZR4XbjFYyO7SNKrUhKqQ6M3gkCs45wZLzkAJwpmZcicfjkjtTA3AiWQhemngq4L893eRifzps6jovVbXhnngsrxTFXsMPcx6GZwyHe3v48TdWZUJUmtPBw',
+                    'Authorization': `Bearer ${process.env.EXPO_PUBLIC_NYCKEL_API_TOKEN}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
@@ -150,6 +198,7 @@ const CreatePostScreen = () => {
                     <ImageManager
                         onImageTaken={handleImageTaken}
                         shouldReset={shouldResetImage}
+                        existingImageUrl={existingPost?.imageUrl}
                     />
                     {isLoading && <Text>Processing image...</Text>}
 
@@ -189,12 +238,10 @@ const CreatePostScreen = () => {
                 {/* Date Picker */}
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>DATE</Text>
-                    <DatePicker
-                        date={date}
-                        setDate={setDate}
-                        label=""
-                        showDatePicker={showDatePicker}
-                        setShowDatePicker={setShowDatePicker}
+                    <DateOrTimePicker
+                        value={date}
+                        setValue={setDate}
+                        mode="date"
                     />
                 </View>
 
@@ -316,7 +363,7 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 16,
         fontWeight: 'bold',
-    }
+    },
 });
 
 export default CreatePostScreen;
