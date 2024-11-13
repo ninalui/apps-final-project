@@ -67,6 +67,11 @@ const CreatePostScreen = ({ navigation, route }) => {
             return;
         }
 
+        if (breedResult?.labelName === "Not a Dog!") {
+            Alert.alert('Error', 'Please upload a picture of a dog!');
+            return;
+        }
+
         try {
             const postData = {
                 imageUrl,
