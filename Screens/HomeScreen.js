@@ -14,8 +14,8 @@ const HomeScreen = ({ navigation, route }) => {
     const handlePostPress = (post) => {
         const postToEdit = {
             ...post,
-            date: post.date instanceof Date ? post.date : new Date(post.date),
-            createdAt: post.createdAt instanceof Date ? post.createdAt : new Date(post.createdAt)
+            date: post.date instanceof Date ? post.date.toISOString() : post.date,
+            createdAt: post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt
         };
 
         navigation.navigate('CreatePost', {
