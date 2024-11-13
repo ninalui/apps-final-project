@@ -7,31 +7,51 @@ import { getCollectionCount } from '../Firebase/firestoreHelper';
 import UserImageIcon from '../ReusableComponent/UserImageIcon';
 
 const LeaderboardScreen = ({ navigation }) => {
+    const [users, setUsers] = useState([]);
 
-    // sample data
-    const users = [
-        {
-            id: '1',
-            userImageUri: '',
-            username: 'User1',
-            breedsCount: 10,
-            postsCount: 5,
-        },
-        {
-            id: '2',
-            userImageUri: '',
-            username: 'User2',
-            breedsCount: 8,
-            postsCount: 3,
-        },
-        {
-            id: '3',
-            userImageUri: '',
-            username: 'User3',
-            breedsCount: 7,
-            postsCount: 2,
-        },
-    ];
+    const fetchUserData = async (snapshot) => {
+        const allUsers = [];
+        const promises = snapshot.docs.map(async (doc) => {
+            try {
+                const data = doc.data();
+                const userId = doc.id;
+                // Get posts and breeds count from subcollections
+                const postsCount = await getCollectionCount(`users/${userId}/posts`);
+                const breedsCount = await getCollectionCount(`users/${userId}/breeds`);
+                // Calculate score - 60% breeds count and 40% posts count
+                const score = (breedsCount * 0.6) + (postsCount * 0.4);
+                allUsers.push({
+                    id: userId,
+                    username: data.username,
+                    userImageUri: data.photoURL,
+                    breedsCount,
+                    postsCount,
+                    score
+                });
+            } catch (error) {
+                console.error('Error fetching users: ', error);
+            }
+        });
+        await Promise.all(promises);
+        return allUsers;
+    };
+
+    // Fetch user data from database
+    useEffect(() => {
+        const unsubscribe = onSnapshot(collection(database, 'users'), async (snapshot) => {
+            try {
+                const userData = await fetchUserData(snapshot);
+                if (userData.length) {
+                    // Sort users by score and get top 3
+                    const topUsers = userData.sort((a, b) => b.score - a.score).slice(0, 3);
+                    setUsers(topUsers);
+                }
+            } catch (error) {
+                console.error('Error fetching user data: ', error);
+            }
+        });
+        return unsubscribe;
+    }, []);
 
 return (
     <View style={styles.container}>
