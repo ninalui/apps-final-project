@@ -2,7 +2,22 @@
 ### CS5520 Final Project
 Team members: Nina Lui, Shuying Du
 
-#### Current state of the application:
+#### Current state of the application
+Creating/Editing a Post:
+![screenshot](create_post.PNG)
+![screenshot](create_post_2.PNG)
+
+Home screen (posts):
+![screenshot](posts.PNG)
+
+Profile: 
+![screenshot](profile.PNG)
+
+Breed Collection: 
+![screenshot](breed_collection.PNG)
+
+Leaderboard:
+![screenshot](leaderboard.PNG)
 
 #### Contribution 
 
