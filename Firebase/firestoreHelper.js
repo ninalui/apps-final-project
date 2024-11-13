@@ -135,3 +135,15 @@ export async function getCollectionCount(collectionPath) {
         return 0;
     }
 }
+
+// Delete a post from user's posts subcollection
+export async function deletePost(userId, postId) {
+    try {
+        const postRef = doc(database, 'users', userId, 'posts', postId);
+        await deleteDoc(postRef);
+        return true;
+    } catch (error) {
+        console.error('Error deleting post: ', error);
+        throw error;
+    }
+}
