@@ -3,21 +3,23 @@
 Team members: Nina Lui, Shuying Du
 
 #### Current state of the application
-Creating/Editing a Post:
-![screenshot](create_post.PNG)
-![screenshot](create_post_2.PNG)
+##### Post screens (Home and Creating/Editing)
+<div align="center">
+    <img src="screenshots/posts.PNG" width="300"/>
+    <img src="screenshots/create_post.PNG" width="300" /> 
+    <img src="screenshots/create_post_2.PNG" width="300" />
+</div>
 
-Home screen (posts):
-![screenshot](posts.PNG)
+##### Profile and Breed Collection
+<div align="center">
+<img src="screenshots/profile.PNG" width="300" />
+<img src="screenshots/breed_collection.PNG" width="300" />
+</div>
 
-Profile: 
-![screenshot](profile.PNG)
-
-Breed Collection: 
-![screenshot](breed_collection.PNG)
-
-Leaderboard:
-![screenshot](leaderboard.PNG)
+##### Leaderboard:
+<div align="center">
+<img src="screenshots/leaderboard.PNG" width="300" />
+</div>
 
 #### Contribution 
 
