@@ -4,7 +4,7 @@ import ImageManager from '../ReusableComponent/imageManager';
 import DateOrTimePicker from '../ReusableComponent/DateOrTimePicker';
 import { storage, auth } from '../Firebase/firebaseSetup';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import { createPost, updateBreedCount } from '../Firebase/firestoreHelper';
+import { createPost, updateBreedCount, updatePost } from '../Firebase/firestoreHelper';
 import { Alert } from 'react-native';
 
 const CreatePostScreen = ({ navigation, route }) => {
@@ -112,7 +112,7 @@ const CreatePostScreen = ({ navigation, route }) => {
             }, 100);
 
             // Navigate to HomeScreen with the new post data
-            navigation.navigate('Home', {
+            navigation.navigate('MyPosts', {
                 updatedPost: isEditing ? {
                     id: postId,
                     ...postData,
