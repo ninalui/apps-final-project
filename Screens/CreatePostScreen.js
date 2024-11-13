@@ -1,21 +1,29 @@
 import { View, Text, StyleSheet, TextInput, Pressable, ScrollView } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ImageManager from '../ReusableComponent/imageManager';
-import DatePicker from '../ReusableComponent/DatePicker';
+import DateOrTimePicker from '../ReusableComponent/DateOrTimePicker';
 import { storage, auth } from '../Firebase/firebaseSetup';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { createPost, updateBreedCount } from '../Firebase/firestoreHelper';
 import { Alert } from 'react-native';
 
-const CreatePostScreen = ({ navigation }) => {
+const CreatePostScreen = ({ navigation, route }) => {
+    const isEditing = route.params?.isEditing || false;
+    const existingPost = route.params?.existingPost;
+
     const user = auth.currentUser;
-    const [breedResult, setBreedResult] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
-    const [description, setDescription] = useState('');
-    const [date, setDate] = useState(new Date());
-    const [showDatePicker, setShowDatePicker] = useState(false);
-    const [imageUrl, setImageUrl] = useState(null);
     const [shouldResetImage, setShouldResetImage] = useState(false);
+    const [breedResult, setBreedResult] = useState(existingPost?.breed ? {
+        labelName: existingPost.breed,
+        confidence: existingPost.confidence
+    } : null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [description, setDescription] = useState(existingPost?.description || '');
+    const [date, setDate] = useState(
+        existingPost?.date ? new Date(existingPost.date) : new Date()
+    );
+    const [imageUrl, setImageUrl] = useState(existingPost?.imageUrl || null);
+
 
 
     const handleCancel = () => {
@@ -35,7 +43,6 @@ const CreatePostScreen = ({ navigation }) => {
                         setIsLoading(false);
                         setDescription('');
                         setDate(new Date());
-                        setShowDatePicker(false);
                         setImageUrl(null);
                         setShouldResetImage(true);  // Trigger image reset
 
@@ -64,23 +71,31 @@ const CreatePostScreen = ({ navigation }) => {
             const postData = {
                 imageUrl,
                 description,
-                date,
+                date: date,
                 location: {
                     latitude: 0,
                     longitude: 0
                 },
-                createdAt: new Date(),
                 ...(breedResult && {
                     breed: breedResult.labelName,
                     confidence: breedResult.confidence
                 })
             };
-            // Create post
-            const postId = await createPost(user.uid, postData);
 
-            // Update breed count if breed was detected
-            if (breedResult?.labelName) {
-                await updateBreedCount(user.uid, breedResult.labelName);
+            let postId;
+            if (isEditing) {
+                // Update existing post
+                postId = existingPost.id;
+                await updatePost(user.uid, postId, postData);
+            } else {
+                // Create new post
+                postData.createdAt = new Date();
+                postId = await createPost(user.uid, postData);
+
+                // Update breed count only for new posts
+                if (breedResult?.labelName) {
+                    await updateBreedCount(user.uid, breedResult.labelName);
+                }
             }
 
             // Reset all states to initial values
@@ -88,7 +103,6 @@ const CreatePostScreen = ({ navigation }) => {
             setIsLoading(false);
             setDescription('');
             setDate(new Date());
-            setShowDatePicker(false);
             setImageUrl(null);
             setShouldResetImage(true);  // Trigger image reset
 
@@ -99,10 +113,18 @@ const CreatePostScreen = ({ navigation }) => {
 
             // Navigate to HomeScreen with the new post data
             navigation.navigate('Home', {
-                newPost: {
+                updatedPost: isEditing ? {
                     id: postId,
                     ...postData,
-                }
+                    date: date.toISOString(),
+                    createdAt: postData.createdAt?.toISOString(),
+                } : undefined,
+                newPost: !isEditing ? {
+                    id: postId,
+                    ...postData,
+                    date: date.toISOString(),
+                    createdAt: postData.createdAt?.toISOString(),
+                } : undefined
             });
 
         } catch (error) {
@@ -110,6 +132,13 @@ const CreatePostScreen = ({ navigation }) => {
             Alert.alert('Error', 'Failed to save post. Please try again.');
         }
     };
+
+    // Update the screen title based on mode
+    useEffect(() => {
+        navigation.setOptions({
+            title: isEditing ? 'Edit Post' : 'New Post'
+        });
+    }, [isEditing]);
 
 
     const handleImageTaken = async (uri) => {
@@ -169,6 +198,7 @@ const CreatePostScreen = ({ navigation }) => {
                     <ImageManager
                         onImageTaken={handleImageTaken}
                         shouldReset={shouldResetImage}
+                        existingImageUrl={existingPost?.imageUrl}
                     />
                     {isLoading && <Text>Processing image...</Text>}
 
@@ -208,12 +238,10 @@ const CreatePostScreen = ({ navigation }) => {
                 {/* Date Picker */}
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>DATE</Text>
-                    <DatePicker
-                        date={date}
-                        setDate={setDate}
-                        label=""
-                        showDatePicker={showDatePicker}
-                        setShowDatePicker={setShowDatePicker}
+                    <DateOrTimePicker
+                        value={date}
+                        setValue={setDate}
+                        mode="date"
                     />
                 </View>
 
@@ -335,7 +363,7 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 16,
         fontWeight: 'bold',
-    }
+    },
 });
 
 export default CreatePostScreen;
