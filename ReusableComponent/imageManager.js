@@ -75,7 +75,7 @@ export default function ImageManager({ onImageTaken, shouldReset, existingImageU
     const handleGalleryPress = async () => {
         try {
             const result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                mediaTypes: ['images'],
                 allowsEditing: true,
             });
 
@@ -89,6 +89,7 @@ export default function ImageManager({ onImageTaken, shouldReset, existingImageU
             Alert.alert("Error", "Failed to pick image. Please try again.");
         }
     };
+
 
     return (
         <View style={styles.container}>

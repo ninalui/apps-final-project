@@ -12,13 +12,15 @@ const HomeScreen = ({ navigation, route }) => {
     const user = auth.currentUser;
 
     const handlePostPress = (post) => {
+        const postToEdit = {
+            ...post,
+            date: post.date instanceof Date ? post.date.toISOString() : post.date,
+            createdAt: post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt
+        };
+
         navigation.navigate('CreatePost', {
             isEditing: true,
-            existingPost: {
-                ...post,
-                date: post.date.toISOString(),  // Convert Date to string
-                createdAt: post.createdAt.toISOString(),
-            }
+            existingPost: postToEdit
         });
     };
 
@@ -64,14 +66,20 @@ const HomeScreen = ({ navigation, route }) => {
         try {
             const postsRef = collection(database, 'users', user.uid, 'posts');
             const q = query(postsRef, orderBy('createdAt', 'desc'));
-            const querySnapshot = await getDocs(q);
+            const querySnapshot = await getDocs(q).catch(error => {
+                // Ignore BloomFilter errors as they don't affect functionality
+                if (error.name !== 'BloomFilterError') {
+                    console.error('Error fetching posts:', error);
+                }
+            });
+
+            if (!querySnapshot) return;
 
             const fetchedPosts = [];
             querySnapshot.forEach((doc) => {
                 fetchedPosts.push({
                     id: doc.id,
                     ...doc.data(),
-                    // Convert Firestore Timestamp to Date
                     date: doc.data().date.toDate(),
                     createdAt: doc.data().createdAt.toDate(),
                 });
@@ -79,7 +87,10 @@ const HomeScreen = ({ navigation, route }) => {
 
             setPosts(fetchedPosts);
         } catch (error) {
-            console.error('Error fetching posts:', error);
+            // Only log non-BloomFilter errors
+            if (error.name !== 'BloomFilterError') {
+                console.error('Error fetching posts:', error);
+            }
         }
     };
 

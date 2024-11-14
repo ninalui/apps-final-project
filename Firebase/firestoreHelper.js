@@ -173,3 +173,37 @@ export async function deletePost(userId, postId) {
         throw error;
     }
 }
+
+
+// Add this new function to handle breed count updates during edit
+export async function updateBreedCountOnEdit(userId, oldBreed, newBreed) {
+    try {
+        // If breeds are different, update counts
+        if (oldBreed !== newBreed) {
+            // Decrement old breed count
+            if (oldBreed) {
+                const oldBreedRef = doc(database, 'users', userId, 'breeds', oldBreed);
+                const oldBreedSnap = await getDoc(oldBreedRef);
+
+                if (oldBreedSnap.exists()) {
+                    const currentCount = oldBreedSnap.data().count;
+                    if (currentCount <= 1) {
+                        await deleteDoc(oldBreedRef);
+                    } else {
+                        await updateDoc(oldBreedRef, {
+                            count: increment(-1)
+                        });
+                    }
+                }
+            }
+
+            // Increment new breed count
+            if (newBreed) {
+                await updateBreedCount(userId, newBreed);
+            }
+        }
+    } catch (error) {
+        console.error('Error updating breed counts:', error);
+        throw error;
+    }
+}
