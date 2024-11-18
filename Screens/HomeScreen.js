@@ -51,14 +51,6 @@ const HomeScreen = ({ navigation, route }) => {
         }
     }, [route.params?.newPost, route.params?.updatedPost]);
 
-    // Handle new post from navigation params
-    useEffect(() => {
-        if (route.params?.newPost) {
-            setPosts(currentPosts => [route.params.newPost, ...currentPosts]);
-            // Clear the params to prevent duplicate additions
-            route.params.newPost = undefined;
-        }
-    }, [route.params?.newPost]);
 
     const fetchPosts = async () => {
         if (!user) return;
