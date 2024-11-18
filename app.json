@@ -12,17 +12,45 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "This app needs access to location to show your current position on the map.",
+        "NSLocationAlwaysUsageDescription": "This app needs access to location to show your current position on the map.",
+        "NSCameraUsageDescription": "This app needs access to camera to take photos for posts.",
+        "NSPhotoLibraryUsageDescription": "This app needs access to photos for selecting images for posts."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "newArchEnabled": true
-  }
+  },
+  "plugins": [
+    [
+      "expo-location",
+      {
+        "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+      }
+    ],
+    [
+      "expo-image-picker",
+      {
+        "photosPermission": "The app accesses your photos to let you share them with your friends.",
+        "cameraPermission": "The app accesses your camera to let you take photos to share with your friends."
+      }
+    ]
+  ]
 }
