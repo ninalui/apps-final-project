@@ -11,7 +11,6 @@ export default function LocationManager({ onLocationSelect, initialLocation, sho
     const [location, setLocation] = useState(initialLocation || null);
     const [isLoading, setIsLoading] = useState(false);
     const [showMap, setShowMap] = useState(false);
-    const [hasCurrentLocation, setHasCurrentLocation] = useState(!!initialLocation);
 
     // sync with parent's location
     useEffect(() => {
@@ -22,7 +21,6 @@ export default function LocationManager({ onLocationSelect, initialLocation, sho
     useEffect(() => {
         if (shouldReset) {
             setLocation(null);
-            setHasCurrentLocation(false);
         }
     }, [shouldReset]);
 
@@ -35,39 +33,46 @@ export default function LocationManager({ onLocationSelect, initialLocation, sho
         return permissionResponse.granted;
     }
 
-    // Handle initial location press
     const handlePress = async () => {
-        if (!hasCurrentLocation) {
-            try {
-                setIsLoading(true);
-                const hasPermission = await verifyPermission();
-                if (!hasPermission) {
-                    Alert.alert('Permission Denied', 'Please allow location access to use this feature.');
-                    return;
-                }
-                const currentLocation = await Location.getCurrentPositionAsync({
-                    accuracy: Location.Accuracy.Balanced,
-                });
-
-                const newLocation = {
-                    latitude: currentLocation.coords.latitude,
-                    longitude: currentLocation.coords.longitude
-                };
-
-                setLocation(newLocation);
-                setHasCurrentLocation(true);
-                if (onLocationSelect) {
-                    onLocationSelect(newLocation);
-                }
-            } catch (error) {
-                Alert.alert('Error', 'Failed to get location: ' + error.message);
-            } finally {
-                setIsLoading(false);
+        try {
+            const hasPermission = await verifyPermission();
+            if (!hasPermission) {
+                Alert.alert('Permission Denied', 'Please allow location access to use this feature.');
+                return;
             }
-        } else {
+
+            // If we already have a location, use it directly
+            if (location) {
+                setShowMap(true);
+                return;
+            }
+
+            setIsLoading(true);
+            // Only get current location if no location is set
+            const currentLocation = await Location.getCurrentPositionAsync({
+                accuracy: Location.Accuracy.Balanced,
+            });
+
+            const newLocation = {
+                latitude: currentLocation.coords.latitude,
+                longitude: currentLocation.coords.longitude
+            };
+
+            setLocation(newLocation);
+            if (onLocationSelect) {
+                onLocationSelect(newLocation);
+            }
+
+            setIsLoading(false);
+            // Show interactive map after getting current location
             setShowMap(true);
+
+        } catch (error) {
+            Alert.alert('Error', 'Failed to get location: ' + error.message);
+            setIsLoading(false);
         }
     };
+
 
     // Handle map press in interactive mode
     const handleMapPress = (event) => {
@@ -95,20 +100,10 @@ export default function LocationManager({ onLocationSelect, initialLocation, sho
                     ) : (
                         <View style={styles.placeholderContainer}>
                             <MaterialIcons name="location-on" size={32} color="#666" />
-                            <Text style={styles.placeholderText}>Tap to get current location</Text>
+                            <Text style={styles.placeholderText}>Tap to select location</Text>
                         </View>
                     )}
                 </Pressable>
-
-                {/* Helper Text - shown only after first location selection */}
-                {hasCurrentLocation && (
-                    <View style={styles.helperTextContainer}>
-                        <MaterialIcons name="edit-location" size={16} color="#666" />
-                        <Text style={styles.helperText}>
-                            Inaccurate location? Tap to adjust
-                        </Text>
-                    </View>
-                )}
             </View>
 
             {/* Interactive Map Modal */}
@@ -133,8 +128,8 @@ export default function LocationManager({ onLocationSelect, initialLocation, sho
             </Modal>
         </>
     );
-
 }
+
 
 const styles = StyleSheet.create({
     container: {
