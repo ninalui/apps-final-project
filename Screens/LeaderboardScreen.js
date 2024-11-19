@@ -2,7 +2,7 @@ import { View, Text, Pressable, FlatList, StyleSheet } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { globalStyles } from '../styles';
 import { database } from '../Firebase/firebaseSetup';
-import { collection, onSnapshot } from 'firebase/firestore';
+import { collection, onSnapshot, collectionGroup, getDocs } from 'firebase/firestore';
 import { getCollectionCount } from '../Firebase/firestoreHelper';
 import UserImageIcon from '../ReusableComponent/UserImageIcon';
 import Loading from '../ReusableComponent/Loading';
@@ -11,6 +11,8 @@ const LeaderboardScreen = ({ navigation }) => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    // Fetch data for users (posts and breeds)
+    // Snapshot is of users collection
     const fetchUserData = async (snapshot) => {
         const allUsers = [];
         const promises = snapshot.docs.map(async (doc) => {
@@ -40,11 +42,17 @@ const LeaderboardScreen = ({ navigation }) => {
 
     // Fetch user data from database
     useEffect(() => {
-        const unsubscribe = onSnapshot(collection(database, 'users'), async (snapshot) => {
+        const handleUpdate = async (snapshot, source) => {
             try {
-                const userData = await fetchUserData(snapshot);
+                let userData;
+                if (source === 'users') {
+                    userData = await fetchUserData(snapshot);
+                // fetchUserData needs to be called with the snapshot of users collection
+                } else {
+                    userData = await fetchUserData(await getDocs(collection(database, 'users'))); 
+                }
                 if (userData.length) {
-                    // Sort users by score and get top 3
+                    // Get top 3 users based on score
                     const topUsers = userData.sort((a, b) => b.score - a.score).slice(0, 3);
                     setUsers(topUsers);
                 }
@@ -53,8 +61,18 @@ const LeaderboardScreen = ({ navigation }) => {
             } finally {
                 setLoading(false);
             }
-        });
-        return unsubscribe;
+        };
+
+        // Listen for updates in users collection and posts and breeds subcollections
+        const unsubscribeUsers = onSnapshot(collection(database, 'users'), (snapshot) => handleUpdate(snapshot, 'users'));
+        const unsubscribePosts = onSnapshot(collectionGroup(database, 'posts'),  () => handleUpdate(null, 'posts'));
+        const unsubscribeBreeds = onSnapshot(collectionGroup(database, 'breeds'),() => handleUpdate(null, 'breeds'));
+
+        return () => {
+            unsubscribeUsers();
+            unsubscribePosts();
+            unsubscribeBreeds();
+        };
     }, []);
 
     if (loading) {
