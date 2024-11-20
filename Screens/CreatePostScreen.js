@@ -6,6 +6,7 @@ import { storage, auth } from '../Firebase/firebaseSetup';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { createPost, updateBreedCount, updatePost, updateBreedCountOnEdit } from '../Firebase/firestoreHelper';
 import { Alert } from 'react-native';
+import LocationManager from '../ReusableComponent/LocationManager';
 
 const CreatePostScreen = ({ navigation, route }) => {
     const isEditing = route.params?.isEditing || false;
@@ -13,6 +14,7 @@ const CreatePostScreen = ({ navigation, route }) => {
 
     const user = auth.currentUser;
     const [shouldResetImage, setShouldResetImage] = useState(false);
+    const [shouldResetLocation, setShouldResetLocation] = useState(false);
     const [breedResult, setBreedResult] = useState(existingPost?.breed ? {
         labelName: existingPost.breed,
         confidence: existingPost.confidence
@@ -23,6 +25,7 @@ const CreatePostScreen = ({ navigation, route }) => {
         existingPost?.date ? new Date(existingPost.date) : new Date()
     );
     const [imageUrl, setImageUrl] = useState(existingPost?.imageUrl || null);
+    const [location, setLocation] = useState(existingPost?.location || null);
 
 
 
@@ -47,10 +50,13 @@ const CreatePostScreen = ({ navigation, route }) => {
                             setDescription('');
                             setDate(new Date());
                             setImageUrl(null);
+                            setLocation(null);
                             setShouldResetImage(true);
-
+                            setShouldResetLocation(true);
+                            // Reset the shouldResetImage flag after a short delay
                             setTimeout(() => {
                                 setShouldResetImage(false);
+                                setShouldResetLocation(false);
                             }, 100);
                         }
                     }
@@ -65,7 +71,7 @@ const CreatePostScreen = ({ navigation, route }) => {
             return;
         }
 
-        if (!imageUrl || !description || !date) {
+        if (!imageUrl || !description || !date || !location) {
             Alert.alert('Error', 'Please fill in all required fields');
             return;
         }
@@ -81,8 +87,8 @@ const CreatePostScreen = ({ navigation, route }) => {
                 description,
                 date: date,
                 location: {
-                    latitude: 0,
-                    longitude: 0
+                    latitude: location.latitude,
+                    longitude: location.longitude
                 },
                 ...(breedResult && {
                     breed: breedResult.labelName,
@@ -123,25 +129,30 @@ const CreatePostScreen = ({ navigation, route }) => {
             setDescription('');
             setDate(new Date());
             setImageUrl(null);
-            setShouldResetImage(true);  // Trigger image reset
+            setShouldResetImage(true);
+            setShouldResetLocation(true);
             // Reset the shouldResetImage flag after a short delay
             setTimeout(() => {
                 setShouldResetImage(false);
+                setShouldResetLocation(false);
             }, 100);
             // Navigate to HomeScreen with the new post data
-            navigation.navigate('MyPosts', {
-                updatedPost: isEditing ? {
-                    id: postId,
-                    ...postData,
-                    date: date.toISOString(),
-                    createdAt: existingPost?.createdAt
-                } : undefined,
-                newPost: !isEditing ? {
-                    id: postId,
-                    ...postData,
-                    date: date.toISOString(),
-                    createdAt: postData.createdAt.toISOString()
-                } : undefined
+            navigation.navigate('Home', {
+                screen: 'MyPosts',
+                params: {  // Add params object
+                    newPost: !isEditing ? {
+                        id: postId,
+                        ...postData,
+                        date: date.toISOString(),
+                        createdAt: postData.createdAt.toISOString()
+                    } : undefined,
+                    updatedPost: isEditing ? {
+                        id: postId,
+                        ...postData,
+                        date: date.toISOString(),
+                        createdAt: existingPost?.createdAt
+                    } : undefined
+                }
             });
         } catch (error) {
             console.error('Error saving post:', error);
@@ -202,6 +213,10 @@ const CreatePostScreen = ({ navigation, route }) => {
         }
     };
 
+    const handleLocationSelect = (newLocation) => {
+        setLocation(newLocation);
+    }
+
 
     return (
         <View style={styles.container}>
@@ -244,12 +259,15 @@ const CreatePostScreen = ({ navigation, route }) => {
                     />
                 </View>
 
-                {/* Map Placeholder */}
+                {/* Map */}
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>LOCATION</Text>
-                    <View style={styles.mapContainer}>
-                        <Text>MAP</Text>
-                    </View>
+                    <LocationManager
+                        onLocationSelect={handleLocationSelect}
+                        initialLocation={existingPost?.location}
+                        shouldReset={shouldResetLocation}
+                        location={location}
+                    />
                 </View>
 
                 {/* Date Picker */}

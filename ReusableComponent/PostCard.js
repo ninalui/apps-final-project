@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import StaticMap from './StaticMap';
 
 const PostCard = ({ post, onPress, onDelete }) => {
     const [expanded, setExpanded] = useState(false);
@@ -82,10 +83,13 @@ const PostCard = ({ post, onPress, onDelete }) => {
                     )}
                 </View>
 
-                {/* Map Placeholder */}
-                <View style={styles.mapPlaceholder}>
-                    <Text>Map Location</Text>
-                </View>
+                {/* Map */}
+                {post.location && (
+                    <StaticMap
+                        location={post.location}
+                        style={styles.mapContainer}
+                    />
+                )}
             </TouchableOpacity>
         </View>
     );
@@ -94,7 +98,7 @@ const PostCard = ({ post, onPress, onDelete }) => {
 const styles = StyleSheet.create({
     deleteButton: {
         position: 'absolute',
-        top: -4,
+        top: -5,
         right: -8,
         zIndex: 1,
         backgroundColor: 'white',
