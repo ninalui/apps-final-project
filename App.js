@@ -1,8 +1,9 @@
+import { LogBox } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useState, useEffect } from 'react';
-import { auth } from './Firebase/firebaseSetup';  // Import your Firebase auth
+import { auth } from './Firebase/firebaseSetup';
 
 // Import screen components
 import HomeScreen from './Screens/HomeScreen';
@@ -14,6 +15,9 @@ import ProfileScreen from './Screens/ProfileScreen';
 import MyBreedScreen from './Screens/MyBreedScreen';
 import Login from './Screens/Login';
 import Signup from './Screens/Signup';
+
+global.GLOBAL = global;
+LogBox.ignoreLogs(["Property 'GLOBAL"]);
 
 const ProfileStack = createNativeStackNavigator();
 const HomeStack = createNativeStackNavigator();
@@ -64,7 +68,7 @@ function AppStack() {
       />
       <Tab.Screen name="Map" component={MapScreen} options={{ title: 'HotSpots' }} />
       <Tab.Screen name="Post" component={CreatePostScreen} options={{ title: 'New Post' }} />
-      <Tab.Screen name="Leaderboard" component={LeaderboardStackScreen} options={{ headerShown: false }}  />
+      <Tab.Screen name="Leaderboard" component={LeaderboardStackScreen} options={{ headerShown: false }} />
       <Tab.Screen name="Profile" component={ProfileStackScreen} options={{ headerShown: false }} />
     </Tab.Navigator>
   );
