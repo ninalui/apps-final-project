@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-na
 import { MaterialIcons } from '@expo/vector-icons';
 import StaticMap from './StaticMap';
 
-const PostCard = ({ post, onPress, onDelete }) => {
+const PostCard = ({ post, onPress, onDelete, isMapView = false }) => {
     const [expanded, setExpanded] = useState(false);
     const maxLength = 100; // Maximum number of characters to show initially
 
@@ -36,16 +36,18 @@ const PostCard = ({ post, onPress, onDelete }) => {
     };
 
     return (
-        <View style={styles.card}>
+        <View style={[styles.card, isMapView && styles.mapViewCard]}>
             <TouchableOpacity onPress={onPress} activeOpacity={0.9}>
-                {/* Delete button */}
-                <TouchableOpacity
-                    style={styles.deleteButton}
-                    onPress={handleDelete}
-                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                >
-                    <MaterialIcons name="delete" size={24} color="#FF4444" />
-                </TouchableOpacity>
+                {/* Delete button - only show if not in map view */}
+                {!isMapView && onDelete && (
+                    <TouchableOpacity
+                        style={styles.deleteButton}
+                        onPress={handleDelete}
+                        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                    >
+                        <MaterialIcons name="delete" size={24} color="#FF4444" />
+                    </TouchableOpacity>
+                )}
 
                 {/* Date */}
                 <Text style={styles.date}>
@@ -83,8 +85,8 @@ const PostCard = ({ post, onPress, onDelete }) => {
                     )}
                 </View>
 
-                {/* Map */}
-                {post.location && (
+                {/* Map - only show if not in map view */}
+                {!isMapView && post.location && (
                     <StaticMap
                         location={post.location}
                         style={styles.mapContainer}
@@ -166,6 +168,11 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    mapViewCard: {
+        marginVertical: 0,
+        marginHorizontal: 0,
+        width: '100%',
     },
 });
 
