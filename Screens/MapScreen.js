@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Modal, Dimensions, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import ClusteredMapView from 'react-native-maps-clustering';
 import { Marker } from 'react-native-maps';
 import { getAllUsersPosts } from '../Firebase/firestoreHelper';
 import Loading from '../ReusableComponent/Loading';
 import PostCard from '../ReusableComponent/PostCard';
 import { MaterialIcons } from '@expo/vector-icons';
+import * as Location from 'expo-location';
 
 const MapScreen = () => {
     const [posts, setPosts] = useState([]);
@@ -17,10 +18,34 @@ const MapScreen = () => {
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
     });
+    const [userLocation, setUserLocation] = useState(null);
 
     useEffect(() => {
         fetchAllPosts();
+        getCurrentLocation();
     }, []);
+
+    const getCurrentLocation = async () => {
+        try {
+            const { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                console.log('Permission to access location was denied');
+                return;
+            }
+
+            const location = await Location.getCurrentPositionAsync({});
+            const currentLocation = {
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+            };
+            setRegion(currentLocation);  // Update map region
+            setUserLocation(location.coords);  // Store user location
+        } catch (error) {
+            console.error('Error getting location:', error);
+        }
+    };
 
     const fetchAllPosts = async () => {
         try {
@@ -71,38 +96,24 @@ const MapScreen = () => {
                 ))}
             </ClusteredMapView>
 
-            {/* Post Modal */}
-            <Modal
-                visible={selectedPost !== null}
-                transparent={true}
-                animationType="fade"
-                onRequestClose={() => setSelectedPost(null)}
-            >
-                <View style={styles.modalContainer}>
+            {/* callout container */}
+            {selectedPost && (
+                <>
                     <TouchableOpacity
-                        style={styles.modalOverlay}
+                        style={styles.overlay}
+                        activeOpacity={1}
                         onPress={() => setSelectedPost(null)}
-                        activeOpacity={0.8}
                     />
-                    <View style={styles.centeredModalContent}>
-                        <View style={styles.modalHeader}>
-                            <TouchableOpacity
-                                style={styles.closeButton}
-                                onPress={() => setSelectedPost(null)}
-                            >
-                                <MaterialIcons name="close" size={24} color="#666" />
-                            </TouchableOpacity>
-                        </View>
-                        {selectedPost && (
-                            <PostCard
-                                post={selectedPost}
-                                isMapView={true}
-                                onPress={() => setSelectedPost(null)}
-                            />
-                        )}
+                    <View style={styles.calloutContainer}>
+                        <PostCard
+                            post={selectedPost}
+                            isMapView={true}
+                            userLocation={userLocation}
+                            onPress={() => setSelectedPost(null)}
+                        />
                     </View>
-                </View>
-            </Modal>
+                </>
+            )}
         </View>
     );
 };
@@ -132,7 +143,8 @@ const styles = StyleSheet.create({
     },
     modalContainer: {
         flex: 1,
-        justifyContent: 'flex-end',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     modalOverlay: {
         flex: 1,
@@ -160,6 +172,21 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 20,
         top: 20,
+    },
+    overlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0,0,0,0.3)',
+    },
+    calloutContainer: {
+        position: 'absolute',
+        top: '35%',
+        left: '30%',
+        width: '40%',
+        maxHeight: '40%',
     },
 });
 
