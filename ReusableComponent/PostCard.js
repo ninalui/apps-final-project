@@ -1,9 +1,28 @@
 import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Alert, Linking, Platform } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import StaticMap from './StaticMap';
 
-const PostCard = ({ post, onPress, onDelete, isMapView = false }) => {
+
+const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // Radius of the earth in km
+    const dLat = deg2rad(lat2 - lat1);
+    const dLon = deg2rad(lon2 - lon1);
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const d = R * c; // Distance in km
+    return d.toFixed(1);
+};
+
+const deg2rad = (deg) => {
+    return deg * (Math.PI / 180);
+};
+
+
+const PostCard = ({ post, onPress, onDelete, isMapView = false, userLocation = null }) => {
     const [expanded, setExpanded] = useState(false);
     const maxLength = 100; // Maximum number of characters to show initially
 
@@ -16,6 +35,31 @@ const PostCard = ({ post, onPress, onDelete, isMapView = false }) => {
         : needsTruncation
             ? post.description.substring(0, maxLength) + '...'
             : post.description;
+
+
+    const openMapsNavigation = () => {
+        const scheme = Platform.select({
+            ios: 'maps:',
+            android: 'google.navigation:q='
+        });
+        const latLng = `${post.location.latitude},${post.location.longitude}`;
+        const label = 'Dog Spotted Here';
+        const url = Platform.select({
+            ios: `${scheme}?q=${label}&ll=${latLng}`,
+            android: `${scheme}${latLng}`
+        });
+
+        Linking.canOpenURL(url).then(supported => {
+            if (supported) {
+                Linking.openURL(url);
+            } else {
+                Alert.alert(
+                    "Error",
+                    "Maps application is not installed"
+                );
+            }
+        });
+    };
 
     const handleDelete = () => {
         Alert.alert(
@@ -54,6 +98,18 @@ const PostCard = ({ post, onPress, onDelete, isMapView = false }) => {
                     {new Date(post.date).toLocaleDateString()}
                 </Text>
 
+                {/* Distance - Only show in map view and if userLocation exists */}
+                {isMapView && userLocation && post.location && (
+                    <Text style={styles.distance}>
+                        {calculateDistance(
+                            userLocation.latitude,
+                            userLocation.longitude,
+                            post.location.latitude,
+                            post.location.longitude
+                        )} km away
+                    </Text>
+                )}
+
                 {/* Image */}
                 <Image
                     source={{ uri: post.imageUrl }}
@@ -91,6 +147,17 @@ const PostCard = ({ post, onPress, onDelete, isMapView = false }) => {
                         location={post.location}
                         style={styles.mapContainer}
                     />
+                )}
+
+                {/*Go Find It button - only show in map view */}
+                {isMapView && (
+                    <TouchableOpacity
+                        style={styles.findButton}
+                        onPress={openMapsNavigation}
+                    >
+                        <MaterialIcons name="directions" size={16} color="white" />
+                        <Text style={styles.findButtonText}>Go Find It</Text>
+                    </TouchableOpacity>
                 )}
             </TouchableOpacity>
         </View>
@@ -131,28 +198,36 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
         elevation: 5,
     },
+    mapViewCard: {
+        marginVertical: 0,
+        marginHorizontal: 0,
+        width: '100%',
+        backgroundColor: 'white',
+        borderRadius: 8,
+        padding: 6,
+    },
     date: {
-        fontSize: 14,
+        fontSize: 10,
         color: '#666',
-        marginBottom: 10,
+        marginBottom: 4,
     },
     image: {
         width: '100%',
-        height: 200,
-        borderRadius: 10,
-        marginBottom: 10,
+        height: 120,
+        borderRadius: 6,
+        marginBottom: 2,
     },
     breed: {
-        fontSize: 16,
+        fontSize: 12,
         fontWeight: 'bold',
-        marginBottom: 5,
+        marginBottom: 2,
     },
     descriptionContainer: {
         marginBottom: 10,
     },
     description: {
-        fontSize: 14,
-        lineHeight: 20,
+        fontSize: 10,
+        lineHeight: 14,
     },
     showMoreButton: {
         marginTop: 5,
@@ -169,10 +244,26 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    mapViewCard: {
-        marginVertical: 0,
-        marginHorizontal: 0,
-        width: '100%',
+    distance: {
+        fontSize: 10,
+        color: '#666',
+        marginBottom: 4,
+        fontStyle: 'italic',
+    },
+    findButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#ff4444',
+        padding: 8,
+        borderRadius: 20,
+        marginTop: 8,
+    },
+    findButtonText: {
+        color: 'white',
+        marginLeft: 4,
+        fontSize: 12,
+        fontWeight: '600',
     },
 });
 
