@@ -12,8 +12,10 @@ import ImageModal from '../ReusableComponent/ImageModal';
 import BreedIcon from '../ReusableComponent/BreedIcon';
 import BreedCounter from '../ReusableComponent/BreedCounter';
 import UserImageIcon from '../ReusableComponent/UserImageIcon';
+import Loading from '../ReusableComponent/Loading';
 
 const ProfileScreen = ({ navigation }) => {
+    const [loading, setLoading] = useState(true);
     const [userImageUri, setUserImageUri] = useState('');
     const [username, setUsername] = useState('');
     const [topBreeds, setTopBreeds] = useState([]);
@@ -96,6 +98,7 @@ const ProfileScreen = ({ navigation }) => {
                         }
                     }
                     setTopBreeds(usersTopBreeds);
+                    setLoading(false);
                 }
                 fetchBreedImages();
             },
@@ -121,6 +124,13 @@ const ProfileScreen = ({ navigation }) => {
             ),
         });
     }, []);
+
+    if (loading) {
+        return (
+            <Loading />
+        );
+    }
+
 
     return (
         <View style={styles.container}>
