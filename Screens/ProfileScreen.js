@@ -175,6 +175,10 @@ const ProfileScreen = ({ navigation }) => {
             <Text style={globalStyles.boldText}>
                 Welcome, {username}
             </Text>
+            {/* User email */}
+            <Text style={globalStyles.normalText}>
+                Email: {auth.currentUser.email}
+            </Text>
 
             {/* Breed collection progress */}
             <BreedCounter breedCount={breedCollection.length} />
