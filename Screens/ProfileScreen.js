@@ -157,6 +157,9 @@ const ProfileScreen = ({ navigation }) => {
                     onPress={() => setShowEditImageModal(true)}>
                     {/* Display if user has photo, otherwise show icon */}
                     <UserImageIcon userImageUri={userImageUri} />
+                    <View style={styles.pencilIcon}>
+                        <MaterialCommunityIcons name="pencil" size={24} color="white" />
+                    </View>
                 </Pressable>
             </View>
             {/* Pressing picture displays modal for uploading new picture */}
@@ -225,5 +228,14 @@ const styles = StyleSheet.create({
     },
     spacer: {
         marginBottom: 15,
+    },
+    pencilIcon: {
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        backgroundColor: 'gray',
+        opacity: 0.9,
+        borderRadius: 100,
+        padding: 5,
     },
 }); 
