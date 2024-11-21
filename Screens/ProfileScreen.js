@@ -5,7 +5,6 @@ import { auth, database } from '../Firebase/firebaseSetup';
 import { getDocument } from '../Firebase/firestoreHelper';
 import { collection, getDocs, onSnapshot, query, where } from 'firebase/firestore';
 import { globalStyles } from '../styles';
-import AntDesign from '@expo/vector-icons/AntDesign';
 
 import NotificationModal from '../ReusableComponent/NotificationModal';
 import CustomModal from '../ReusableComponent/CustomModal';
@@ -117,7 +116,7 @@ const ProfileScreen = ({ navigation }) => {
                     ]}
                     onPress={() => auth.signOut()}
                 >
-                    <AntDesign name="logout" size={24} color="black" />
+                    <MaterialCommunityIcons name="logout" size={24} color="black" />
                 </Pressable>
             ),
         });
@@ -175,7 +174,7 @@ const ProfileScreen = ({ navigation }) => {
             </Text>
 
             {/* Breed collection progress */}
-            <BreedCounter breedCount={breedCollection.length}/>
+            <BreedCounter breedCount={breedCollection.length} />
 
             {/* Navigate to breed collection */}
             <Pressable
