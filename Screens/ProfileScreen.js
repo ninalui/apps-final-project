@@ -12,8 +12,10 @@ import ImageModal from '../ReusableComponent/ImageModal';
 import BreedIcon from '../ReusableComponent/BreedIcon';
 import BreedCounter from '../ReusableComponent/BreedCounter';
 import UserImageIcon from '../ReusableComponent/UserImageIcon';
+import Loading from '../ReusableComponent/Loading';
 
 const ProfileScreen = ({ navigation }) => {
+    const [loading, setLoading] = useState(true);
     const [userImageUri, setUserImageUri] = useState('');
     const [username, setUsername] = useState('');
     const [topBreeds, setTopBreeds] = useState([]);
@@ -96,6 +98,7 @@ const ProfileScreen = ({ navigation }) => {
                         }
                     }
                     setTopBreeds(usersTopBreeds);
+                    setLoading(false);
                 }
                 fetchBreedImages();
             },
@@ -105,6 +108,29 @@ const ProfileScreen = ({ navigation }) => {
         );
         return () => unsubscribe();
     }, []);
+
+    // Logout header button
+    useEffect(() => {
+        navigation.setOptions({
+            headerRight: () => (
+                <Pressable
+                    style={({ pressed }) => [
+                        pressed && globalStyles.buttonPressed
+                    ]}
+                    onPress={() => auth.signOut()}
+                >
+                    <MaterialCommunityIcons name="logout" size={24} color="black" />
+                </Pressable>
+            ),
+        });
+    }, []);
+
+    if (loading) {
+        return (
+            <Loading />
+        );
+    }
+
 
     return (
         <View style={styles.container}>
@@ -141,6 +167,9 @@ const ProfileScreen = ({ navigation }) => {
                     onPress={() => setShowEditImageModal(true)}>
                     {/* Display if user has photo, otherwise show icon */}
                     <UserImageIcon userImageUri={userImageUri} />
+                    <View style={styles.pencilIcon}>
+                        <MaterialCommunityIcons name="pencil" size={24} color="white" />
+                    </View>
                 </Pressable>
             </View>
             {/* Pressing picture displays modal for uploading new picture */}
@@ -156,9 +185,13 @@ const ProfileScreen = ({ navigation }) => {
             <Text style={globalStyles.boldText}>
                 Welcome, {username}
             </Text>
+            {/* User email */}
+            <Text style={globalStyles.normalText}>
+                Email: {auth.currentUser.email}
+            </Text>
 
             {/* Breed collection progress */}
-            <BreedCounter breedCount={breedCollection.length}/>
+            <BreedCounter breedCount={breedCollection.length} />
 
             {/* Navigate to breed collection */}
             <Pressable
@@ -209,5 +242,14 @@ const styles = StyleSheet.create({
     },
     spacer: {
         marginBottom: 15,
+    },
+    pencilIcon: {
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        backgroundColor: 'gray',
+        opacity: 0.9,
+        borderRadius: 100,
+        padding: 5,
     },
 }); 
