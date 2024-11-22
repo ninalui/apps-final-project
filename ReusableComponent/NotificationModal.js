@@ -29,11 +29,11 @@ export default function NotificationModal({ showModal, toggleModal, notification
       'Are you sure you want to cancel? Any changes will not be saved.',
       [
         {
-          text: 'Yes',
-          onPress: () => toggleModal(),
+          text: 'No',
         },
         {
-          text: 'No',
+          text: 'Yes',
+          onPress: () => toggleModal(),
         },
       ],
     );
