@@ -2,8 +2,9 @@ import { LogBox } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { auth } from './Firebase/firebaseSetup';
+import * as Notifications from 'expo-notifications';
 
 // Import screen components
 import HomeScreen from './Screens/HomeScreen';
@@ -16,17 +17,6 @@ import MyBreedScreen from './Screens/MyBreedScreen';
 import Login from './Screens/Login';
 import Signup from './Screens/Signup';
 
-// To present notifications
-import * as Notifications from 'expo-notifications'
-
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({ 
-    shouldShowAlert: true, 
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  })
-});
-
 global.GLOBAL = global;
 LogBox.ignoreLogs(["Property 'GLOBAL"]);
 
@@ -35,6 +25,15 @@ const HomeStack = createNativeStackNavigator();
 const LeaderboardStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const AuthStack = createNativeStackNavigator();
+
+// To present notifications
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  })
+});
 
 function HomeStackScreen() {
   return (
@@ -96,6 +95,7 @@ function AuthStackScreen() {
 
 export default function App() {
   const [user, setUser] = useState(null);
+  const navigationRef = useRef();
 
   useEffect(() => {
     // Listen for auth state changes
@@ -107,8 +107,20 @@ export default function App() {
     return unsubscribe;
   }, []);
 
+  // Navigate to screen when notification is tapped
+  useEffect(() => {
+    const subscription = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log(response);
+      const screen = response.notification.request.content.data.screen;
+      if (screen && navigationRef.current) {
+        navigationRef.current.navigate(screen);
+      }
+    });
+    return () => subscription.remove();
+  }, []);
+
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       {user ? <AppStack /> : <AuthStackScreen />}
     </NavigationContainer>
   );
