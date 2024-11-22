@@ -27,12 +27,14 @@ async function scheduleNotifcationHandler(hour, minute) {
             return;
         }
 
+        // Cancels all scheduled notifications so only one is active
+        await Notifications.cancelAllScheduledNotificationsAsync();
+
         await Notifications.scheduleNotificationAsync({
             content: {
                 title: 'Notification',
                 body: 'New Notification',
             },
-            // for testing, checking that notification triggers at the correct time
             trigger: {
                 hour: hour,
                 minute: minute,
@@ -61,7 +63,6 @@ async function cancelAllNotifications() {
 async function fetchNotificationSettings(userId) {
     try {
         const userData = await getDocument(userId, 'users');
-        console.log('userData:', userData);
         return {
             notificationOn: userData.notificationOn,
             notificationTime: userData.notificationTime,
