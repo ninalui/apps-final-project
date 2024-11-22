@@ -16,6 +16,17 @@ import MyBreedScreen from './Screens/MyBreedScreen';
 import Login from './Screens/Login';
 import Signup from './Screens/Signup';
 
+// To present notifications
+import * as Notifications from 'expo-notifications'
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({ 
+    shouldShowAlert: true, 
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  })
+});
+
 global.GLOBAL = global;
 LogBox.ignoreLogs(["Property 'GLOBAL"]);
 
