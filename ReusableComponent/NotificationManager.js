@@ -23,7 +23,7 @@ async function scheduleNotifcationHandler(hour, minute) {
     try {
         const hasPermission = await verifyPermission();
         if (!hasPermission) {
-            Alert.alert('You need to give permission to use notifications');
+            Alert.alert('You need to give permission to use notifications.');
             return;
         }
 
@@ -35,7 +35,7 @@ async function scheduleNotifcationHandler(hour, minute) {
                 title: 'Expand your Collection!',
                 body: 'Check out the latest hotspots to log new dogs and expand your breed collection!',
                 sound: true,
-                data: { screen: 'Map'}
+                data: { screen: 'Map'} // Navigate to hotspots map when notification is tapped
             },
             trigger: {
                 hour: hour,
@@ -44,9 +44,6 @@ async function scheduleNotifcationHandler(hour, minute) {
                 type: Notifications.SchedulableTriggerInputTypes.DAILY,
             },
         });
-        // for testing, check scheduled notifs
-        const scheduledNotifications = await Notifications.getAllScheduledNotificationsAsync();
-        console.log('Scheduled Notifications:', JSON.stringify(scheduledNotifications));
     } catch (error) {
         console.log('Error scheduling notification', error);
     }
