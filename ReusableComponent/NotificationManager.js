@@ -32,8 +32,9 @@ async function scheduleNotifcationHandler(hour, minute) {
 
         await Notifications.scheduleNotificationAsync({
             content: {
-                title: 'Notification',
-                body: 'New Notification',
+                title: 'Expand your Collection!',
+                body: 'Check out the latest hotspots to log new dogs and expand your breed collection!',
+                sound: true,
             },
             trigger: {
                 hour: hour,
