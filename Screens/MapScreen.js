@@ -8,12 +8,12 @@ import PostCard from '../ReusableComponent/PostCard';
 import { MaterialIcons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 
-const MapScreen = () => {
+const MapScreen = ({ navigation }) => {
     const [posts, setPosts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [selectedPost, setSelectedPost] = useState(null);
     const [region, setRegion] = useState({
-        latitude: 49.2827,  // Vancouver coordinates
+        latitude: 49.2827,
         longitude: -123.1207,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
@@ -24,6 +24,15 @@ const MapScreen = () => {
         fetchAllPosts();
         getCurrentLocation();
     }, []);
+
+    // focus listener to refresh data when screen is focused
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            fetchAllPosts();
+        });
+
+        return unsubscribe;
+    }, [navigation]);
 
     const getCurrentLocation = async () => {
         try {
@@ -40,7 +49,7 @@ const MapScreen = () => {
                 latitudeDelta: 0.0922,
                 longitudeDelta: 0.0421,
             };
-            setRegion(currentLocation);  // Update map region
+            setRegion(currentLocation);
             setUserLocation(location.coords);  // Store user location
         } catch (error) {
             console.error('Error getting location:', error);
