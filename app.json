@@ -17,7 +17,8 @@
         "NSLocationWhenInUseUsageDescription": "This app needs access to location to show your current position on the map.",
         "NSLocationAlwaysUsageDescription": "This app needs access to location to show your current position on the map.",
         "NSCameraUsageDescription": "This app needs access to camera to take photos for posts.",
-        "NSPhotoLibraryUsageDescription": "This app needs access to photos for selecting images for posts."
+        "NSPhotoLibraryUsageDescription": "This app needs access to photos for selecting images for posts.",
+        "NSUserNotificationUsageDescription": "This app needs access to notifications to send you reminders."
       }
     },
     "android": {
@@ -30,7 +31,8 @@
         "ACCESS_FINE_LOCATION",
         "CAMERA",
         "READ_EXTERNAL_STORAGE",
-        "WRITE_EXTERNAL_STORAGE"
+        "WRITE_EXTERNAL_STORAGE",
+        "NOTIFICATIONS"
       ]
     },
     "web": {
