@@ -139,7 +139,7 @@ const CreatePostScreen = ({ navigation, route }) => {
             // Navigate to HomeScreen with the new post data
             navigation.navigate('Home', {
                 screen: 'MyPosts',
-                params: {  // Add params object
+                params: {
                     newPost: !isEditing ? {
                         id: postId,
                         ...postData,

@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Text, StyleSheet, RefreshControl } from 'react-native';
 import { auth } from '../Firebase/firebaseSetup';
-import { collection, query, orderBy, getDocs } from 'firebase/firestore';
-import { database } from '../Firebase/firebaseSetup';
 import PostCard from '../ReusableComponent/PostCard';
-import { deletePost } from '../Firebase/firestoreHelper';
+import { deletePost, fetchUserPosts } from '../Firebase/firestoreHelper';
 
 const HomeScreen = ({ navigation, route }) => {
     const [posts, setPosts] = useState([]);
@@ -56,33 +54,10 @@ const HomeScreen = ({ navigation, route }) => {
         if (!user) return;
 
         try {
-            const postsRef = collection(database, 'users', user.uid, 'posts');
-            const q = query(postsRef, orderBy('createdAt', 'desc'));
-            const querySnapshot = await getDocs(q).catch(error => {
-                // Ignore BloomFilter errors as they don't affect functionality
-                if (error.name !== 'BloomFilterError') {
-                    console.error('Error fetching posts:', error);
-                }
-            });
-
-            if (!querySnapshot) return;
-
-            const fetchedPosts = [];
-            querySnapshot.forEach((doc) => {
-                fetchedPosts.push({
-                    id: doc.id,
-                    ...doc.data(),
-                    date: doc.data().date.toDate(),
-                    createdAt: doc.data().createdAt.toDate(),
-                });
-            });
-
+            const fetchedPosts = await fetchUserPosts(user.uid);
             setPosts(fetchedPosts);
         } catch (error) {
-            // Only log non-BloomFilter errors
-            if (error.name !== 'BloomFilterError') {
-                console.error('Error fetching posts:', error);
-            }
+            console.error('Error fetching posts:', error);
         }
     };
 

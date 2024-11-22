@@ -1,5 +1,5 @@
 import { database } from './firebaseSetup';
-import { collection, addDoc, doc, getDoc, getDocs, updateDoc, deleteDoc, setDoc, increment } from 'firebase/firestore';
+import { collection, addDoc, doc, getDoc, getDocs, updateDoc, deleteDoc, setDoc, increment, query, orderBy } from 'firebase/firestore';
 
 // Write to posts subcollection
 export async function createPost(userId, postData) {
@@ -204,6 +204,60 @@ export async function updateBreedCountOnEdit(userId, oldBreed, newBreed) {
         }
     } catch (error) {
         console.error('Error updating breed counts:', error);
+        throw error;
+    }
+}
+
+
+export async function fetchUserPosts(userId) {
+    try {
+        const postsRef = collection(database, 'users', userId, 'posts');
+        const q = query(postsRef, orderBy('createdAt', 'desc'));
+        const querySnapshot = await getDocs(q);
+
+        const fetchedPosts = [];
+        querySnapshot.forEach((doc) => {
+            fetchedPosts.push({
+                id: doc.id,
+                ...doc.data(),
+                date: doc.data().date.toDate(),
+                createdAt: doc.data().createdAt.toDate(),
+            });
+        });
+
+        return fetchedPosts;
+    } catch (error) {
+        console.error('Error fetching user posts:', error);
+        throw error;
+    }
+}
+
+
+
+// fetch all posts from all users
+export async function getAllUsersPosts() {
+    try {
+        const allPosts = [];
+        const usersSnapshot = await getDocs(collection(database, 'users'));
+
+        for (const userDoc of usersSnapshot.docs) {
+            const postsRef = collection(database, 'users', userDoc.id, 'posts');
+            const postsSnapshot = await getDocs(postsRef);
+
+            postsSnapshot.forEach(doc => {
+                const postData = doc.data();
+                allPosts.push({
+                    id: doc.id,
+                    userId: userDoc.id,
+                    ...postData,
+                    date: postData.date.toDate(),
+                    createdAt: postData.createdAt.toDate(),
+                });
+            });
+        }
+        return allPosts;
+    } catch (error) {
+        console.error('Error fetching all posts:', error);
         throw error;
     }
 }
