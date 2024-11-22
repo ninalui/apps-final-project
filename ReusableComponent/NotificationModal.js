@@ -4,6 +4,7 @@ import { auth } from '../Firebase/firebaseSetup';
 import { updateDB } from '../Firebase/firestoreHelper';
 import DateOrTimePicker from '../ReusableComponent/DateOrTimePicker';
 import { globalStyles } from '../styles';
+import setUpNotification from './NotificationManager';
 
 export default function NotificationModal({ showModal, toggleModal, notificationOn, setNotificationOn, notificationTime, setNotificationTime }) {
   const [isOn, setIsOn] = useState(notificationOn);
@@ -28,11 +29,11 @@ export default function NotificationModal({ showModal, toggleModal, notification
       'Are you sure you want to cancel? Any changes will not be saved.',
       [
         {
-          text: 'Yes',
-          onPress: () => toggleModal(),
+          text: 'No',
         },
         {
-          text: 'No',
+          text: 'Yes',
+          onPress: () => toggleModal(),
         },
       ],
     );
@@ -58,6 +59,9 @@ export default function NotificationModal({ showModal, toggleModal, notification
         await updateDB(currentUser, notificationSettings, 'users');
         setNotificationOn(isOn);
         setNotificationTime(time);
+
+        // From NotificationManager.js, to create scheduled notification
+        await setUpNotification(currentUser);
       }
     } catch (error) {
       console.error('Error saving notification settings:', error);
