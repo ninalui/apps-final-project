@@ -22,20 +22,25 @@ eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJuYmYiOjE3MzEyMTUzMTUsImV4cCI6MTczMTI
 
 ##### Profile and Breed Collection
 <div align="center">
-<img src="screenshots/iteration2_profile.png" width="300" />
-<img src="screenshots/iteration2_breed.png" width="300" />
+    <img src="screenshots/iteration2_profile.png" width="300" />
+    <img src="screenshots/iteration2_breed.png" width="300" />
 </div>
 
 ##### Leaderboard
 <div align="center">
-<img src="screenshots/iteration2_leaderboard.png" width="300" />
+    <img src="screenshots/iteration2_leaderboard.png" width="300" />
 </div>
 
 ##### Map screen
 <div align="center">
-<img src="screenshots/iteration2_map_screen.png" width="300" />
+    <img src="screenshots/iteration2_map_screen.png" width="300" />
 </div>
 
+##### Notification
+<div align="center">
+    <img src="screenshots/iteration2_setnotification.png" width="300" />
+    <img src="screenshots/iteration2_notification.png" width="300" />
+</div>
 
 #### Contribution 
 Nina:
@@ -71,13 +76,13 @@ _________________________________________________________________________
 
 ##### Profile and Breed Collection
 <div align="center">
-<img src="screenshots/profile.PNG" width="300" />
-<img src="screenshots/breed_collection.PNG" width="300" />
+    <img src="screenshots/profile.PNG" width="300" />
+    <img src="screenshots/breed_collection.PNG" width="300" />
 </div>
 
 ##### Leaderboard
 <div align="center">
-<img src="screenshots/leaderboard.PNG" width="300" />
+    <img src="screenshots/leaderboard.PNG" width="300" />
 </div>
 
 #### Contribution 
