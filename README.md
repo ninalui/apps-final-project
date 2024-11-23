@@ -16,24 +16,24 @@ eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJuYmYiOjE3MzEyMTUzMTUsImV4cCI6MTczMTI
 #### Current state of the application
 ##### Post screens (Home and Creating/Editing)
 <div align="center">
-    <img src="screenshots/iteration2_home.PNG" width="300"/>
-    <img src="screenshots/iteration2_create_post1.PNG" width="300" /> 
+    <img src="screenshots/iteration2_home.png" width="300"/>
+    <img src="screenshots/iteration2_create_post1.png" width="300" /> 
 </div>
 
 ##### Profile and Breed Collection
 <div align="center">
-<img src="screenshots/iteration2_profile.PNG" width="300" />
-<img src="screenshots/iteration2_breed.PNG" width="300" />
+<img src="screenshots/iteration2_profile.png" width="300" />
+<img src="screenshots/iteration2_breed.png" width="300" />
 </div>
 
 ##### Leaderboard
 <div align="center">
-<img src="screenshots/iteration2_leaderboard.PNG" width="300" />
+<img src="screenshots/iteration2_leaderboard.png" width="300" />
 </div>
 
 ##### Map screen
 <div align="center">
-<img src="screenshots/iteration2_map_screen.PNG" width="300" />
+<img src="screenshots/iteration2_map_screen.png" width="300" />
 </div>
 
 
