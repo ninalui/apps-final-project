@@ -1,7 +1,66 @@
 # PupScout
-### CS5520 Final Project
+## CS5520 Final Project
 Team members: Nina Lui, Shuying Du
 
+### Iteration 2
+#### Functionalities added
+Authentication(Partially implemented)
+Camera use
+Location use
+Notification
+External API use
+
+#### Api key
+eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJuYmYiOjE3MzEyMTUzMTUsImV4cCI6MTczMTIxODkxNSwiaXNzIjoiaHR0cHM6Ly93d3cubnlja2VsLmNvbSIsImNsaWVudF9pZCI6IjI4dTd0dGM0bjZiZXkzb2ZzdjlsZXdrcmxrb25zajk1IiwianRpIjoiOURDOTI3NEEwNkMwODVGMjhDNkExMkFBODYxRkExMDIiLCJpYXQiOjE3MzEyMTUzMTUsInNjb3BlIjpbImFwaSJdfQ.YVR9XKO-eWASv0Rg8zzjB_4tdqKmsZbXPC9Cuak12K_B2yNIediSYcMeuDXfIY8SzmQ1HFCRs24egnXajVW8GhU9UzLPRACM3_ycl6B2yUpQzm8L9UAnGId7V0IDN0zgdYHEnbWOo8WMKyZsZEt53vwIrzvgkzW-pk6PvB7TEEFsEDL72unFdN9mWvUUEaU25_b6r9fhXa7OTO_gkf0VFlTlu4-iAySjZR4XbjFYyO7SNKrUhKqQ6M3gkCs45wZLzkAJwpmZcicfjkjtTA3AiWQhemngq4L893eRifzps6jovVbXhnngsrxTFXsMPcx6GZwyHe3v48TdWZUJUmtPBw
+
+#### Current state of the application
+##### Post screens (Home and Creating/Editing)
+<div align="center">
+    <img src="screenshots/iteration2_home.png" width="300"/>
+    <img src="screenshots/iteration2_create_post1.png" width="300" /> 
+</div>
+
+##### Profile and Breed Collection
+<div align="center">
+<img src="screenshots/iteration2_profile.png" width="300" />
+<img src="screenshots/iteration2_breed.png" width="300" />
+</div>
+
+##### Leaderboard
+<div align="center">
+<img src="screenshots/iteration2_leaderboard.png" width="300" />
+</div>
+
+##### Map screen
+<div align="center">
+<img src="screenshots/iteration2_map_screen.png" width="300" />
+</div>
+
+
+#### Contribution 
+Nina:
+
+Shuying:
+1. Enhanced location functionality in CreatePost screen:
+    - Implemented Google Maps API integration for static and interactive maps
+    - Created LocationManager component for location permissions and state management
+    - Added location selection feature with interactive map markers
+    - Integrated location display in PostCard component
+2. Developed map screen functionality:
+    - Created new MapScreen to display all users' posts using clustered markers
+    - Implemented react-native-maps-clustering for efficient marker management
+    - Added current location tracking and automatic map centering
+    - Integrated distance calculation between user and post locations
+    - Added navigation feature using device's default map application
+    - Implemented auto-refresh mechanism for real-time map updates
+3. Improved code organization:
+    - Extracted and centralized posts fetching logic
+    - Created reusable location-related components
+    - Enhanced PostCard component to support both list and map views 
+
+_________________________________________________________________________
+
+### Iteration 1
 #### Current state of the application
 ##### Post screens (Home and Creating/Editing)
 <div align="center">
