@@ -4,14 +4,16 @@ Team members: Nina Lui, Shuying Du
 
 ### Iteration 2
 #### Functionalities added
-Authentication(Partially implemented)
-Camera use
-Location use
-Notification
-External API use
+- Location use
+- Notification
+- Authenticaion (only partially implemented, will complete during iteration 3)
+- Camera Use (added during iteration 1)
+- External API Use (added during iteration 1)
 
-#### Api key
+#### External API key
+```
 eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJuYmYiOjE3MzEyMTUzMTUsImV4cCI6MTczMTIxODkxNSwiaXNzIjoiaHR0cHM6Ly93d3cubnlja2VsLmNvbSIsImNsaWVudF9pZCI6IjI4dTd0dGM0bjZiZXkzb2ZzdjlsZXdrcmxrb25zajk1IiwianRpIjoiOURDOTI3NEEwNkMwODVGMjhDNkExMkFBODYxRkExMDIiLCJpYXQiOjE3MzEyMTUzMTUsInNjb3BlIjpbImFwaSJdfQ.YVR9XKO-eWASv0Rg8zzjB_4tdqKmsZbXPC9Cuak12K_B2yNIediSYcMeuDXfIY8SzmQ1HFCRs24egnXajVW8GhU9UzLPRACM3_ycl6B2yUpQzm8L9UAnGId7V0IDN0zgdYHEnbWOo8WMKyZsZEt53vwIrzvgkzW-pk6PvB7TEEFsEDL72unFdN9mWvUUEaU25_b6r9fhXa7OTO_gkf0VFlTlu4-iAySjZR4XbjFYyO7SNKrUhKqQ6M3gkCs45wZLzkAJwpmZcicfjkjtTA3AiWQhemngq4L893eRifzps6jovVbXhnngsrxTFXsMPcx6GZwyHe3v48TdWZUJUmtPBw
+```
 
 #### Current state of the application
 ##### Post screens (Home and Creating/Editing)
