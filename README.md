@@ -4,14 +4,16 @@ Team members: Nina Lui, Shuying Du
 
 ### Iteration 2
 #### Functionalities added
-Authentication(Partially implemented)
-Camera use
-Location use
-Notification
-External API use
+- Location use
+- Notification
+- Authentication (only partially implemented, will complete during iteration 3)
+- Camera Use (added during iteration 1)
+- External API Use (added during iteration 1)
 
-#### Api key
+#### External API key
+```
 eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJuYmYiOjE3MzEyMTUzMTUsImV4cCI6MTczMTIxODkxNSwiaXNzIjoiaHR0cHM6Ly93d3cubnlja2VsLmNvbSIsImNsaWVudF9pZCI6IjI4dTd0dGM0bjZiZXkzb2ZzdjlsZXdrcmxrb25zajk1IiwianRpIjoiOURDOTI3NEEwNkMwODVGMjhDNkExMkFBODYxRkExMDIiLCJpYXQiOjE3MzEyMTUzMTUsInNjb3BlIjpbImFwaSJdfQ.YVR9XKO-eWASv0Rg8zzjB_4tdqKmsZbXPC9Cuak12K_B2yNIediSYcMeuDXfIY8SzmQ1HFCRs24egnXajVW8GhU9UzLPRACM3_ycl6B2yUpQzm8L9UAnGId7V0IDN0zgdYHEnbWOo8WMKyZsZEt53vwIrzvgkzW-pk6PvB7TEEFsEDL72unFdN9mWvUUEaU25_b6r9fhXa7OTO_gkf0VFlTlu4-iAySjZR4XbjFYyO7SNKrUhKqQ6M3gkCs45wZLzkAJwpmZcicfjkjtTA3AiWQhemngq4L893eRifzps6jovVbXhnngsrxTFXsMPcx6GZwyHe3v48TdWZUJUmtPBw
+```
 
 #### Current state of the application
 ##### Post screens (Home and Creating/Editing)
@@ -22,24 +24,39 @@ eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJuYmYiOjE3MzEyMTUzMTUsImV4cCI6MTczMTI
 
 ##### Profile and Breed Collection
 <div align="center">
-<img src="screenshots/iteration2_profile.png" width="300" />
-<img src="screenshots/iteration2_breed.png" width="300" />
+    <img src="screenshots/iteration2_profile.png" width="300" />
+    <img src="screenshots/iteration2_breed.png" width="300" />
 </div>
 
 ##### Leaderboard
 <div align="center">
-<img src="screenshots/iteration2_leaderboard.png" width="300" />
+    <img src="screenshots/iteration2_leaderboard.png" width="300" />
 </div>
 
 ##### Map screen
 <div align="center">
-<img src="screenshots/iteration2_map_screen.png" width="300" />
+    <img src="screenshots/iteration2_map_screen.png" width="300" />
 </div>
 
+##### Notification
+<div align="center">
+    <img src="screenshots/iteration2_setnotification.png" width="300" />
+    <img src="screenshots/iteration2_notification.png" width="300" />
+</div>
 
 #### Contribution 
 Nina:
-
+1. Fixed bug where leaderboard was not updating when users create new posts.
+    - Added listeners to posts and breeds subcollections to fetch data when changes happen.
+2. Updated profile screen:
+    - Added displaying user's email address.
+    - Added an edit icon to user's image so it's clear it can be changed.
+    - Added a button to log out.
+3. Added notification functionality:
+    - User can toggle notifications on and off, and schedule the time they want to receive a notification.
+    - Daily notification is scheduled to send at the time user specified.
+    - Added functionality for user to be navigated to Map screen when tapping on notification.
+   
 Shuying:
 1. Enhanced location functionality in CreatePost screen:
     - Implemented Google Maps API integration for static and interactive maps
@@ -71,13 +88,13 @@ _________________________________________________________________________
 
 ##### Profile and Breed Collection
 <div align="center">
-<img src="screenshots/profile.PNG" width="300" />
-<img src="screenshots/breed_collection.PNG" width="300" />
+    <img src="screenshots/profile.PNG" width="300" />
+    <img src="screenshots/breed_collection.PNG" width="300" />
 </div>
 
 ##### Leaderboard
 <div align="center">
-<img src="screenshots/leaderboard.PNG" width="300" />
+    <img src="screenshots/leaderboard.PNG" width="300" />
 </div>
 
 #### Contribution 
