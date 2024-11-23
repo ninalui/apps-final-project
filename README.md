@@ -6,7 +6,7 @@ Team members: Nina Lui, Shuying Du
 #### Functionalities added
 - Location use
 - Notification
-- Authenticaion (only partially implemented, will complete during iteration 3)
+- Authentication (only partially implemented, will complete during iteration 3)
 - Camera Use (added during iteration 1)
 - External API Use (added during iteration 1)
 
