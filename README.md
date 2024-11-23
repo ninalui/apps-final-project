@@ -44,7 +44,17 @@ eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJuYmYiOjE3MzEyMTUzMTUsImV4cCI6MTczMTI
 
 #### Contribution 
 Nina:
-
+1. Fixed bug where leaderboard was not updating when users create new posts.
+    - Added listeners to posts and breeds subcollections to fetch data when changes happen.
+2. Updated profile screen:
+    - Added displaying user's email address.
+    - Added an edit icon to user's image so it's clear it can be changed.
+    - Added a button to log out.
+3. Added notification functionality:
+    - User can toggle notifications on and off, and schedule the time they want to receive a notification.
+    - Daily notification is scheduled to send at the time user specified.
+    - Added functionality for user to be navigated to Map screen when tapping on notification.
+   
 Shuying:
 1. Enhanced location functionality in CreatePost screen:
     - Implemented Google Maps API integration for static and interactive maps
