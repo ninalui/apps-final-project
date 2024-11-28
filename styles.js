@@ -71,10 +71,10 @@ export const globalStyles = StyleSheet.create({
     opacity: 0.9,
   },
   cancelButton: {
-    backgroundColor: '#F9C0AB',
+    backgroundColor: '#E38E49',
   },
   saveButton: {
-    backgroundColor: colors.sage,
+    backgroundColor: '#75A47F',
   },
   buttonText: {
     color: '#fff',

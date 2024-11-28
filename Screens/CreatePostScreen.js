@@ -392,7 +392,7 @@ const styles = StyleSheet.create({
         opacity: 0.9,
     },
     cancelButton: {
-        backgroundColor: '#F9C0AB',
+        backgroundColor: '#E38E49',
     },
     saveButton: {
         backgroundColor: '#75A47F',
