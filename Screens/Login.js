@@ -33,6 +33,9 @@ export default function Login({ navigation }) {
                 case 'auth/wrong-password':
                     errorMessage = 'Incorrect password';
                     break;
+                case 'auth/invalid-credential':
+                    errorMessage = 'The email or password entered is incorrect';
+                    break;
             }
 
             Alert.alert('Error', errorMessage);
