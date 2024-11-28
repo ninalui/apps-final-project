@@ -6,16 +6,16 @@ import DateOrTimePicker from '../ReusableComponent/DateOrTimePicker';
 import { globalStyles } from '../styles';
 import setUpNotification from './NotificationManager';
 
-export default function NotificationModal({ showModal, toggleModal, notificationOn, setNotificationOn, notificationTime, setNotificationTime }) {
+export default function NotificationModal({ showNotifModal, toggleNotifModal, notificationOn, setNotificationOn, notificationTime, setNotificationTime }) {
   const [isOn, setIsOn] = useState(notificationOn);
   const [time, setTime] = useState(notificationTime);
 
   useEffect(() => {
-    if (showModal) {
+    if (showNotifModal) {
       setIsOn(notificationOn);
       setTime(notificationTime);
     }
-  }, [showModal]);
+  }, [showNotifModal]);
 
   const toggleSwitch = () => setIsOn(previousState => !previousState);
 
@@ -33,7 +33,7 @@ export default function NotificationModal({ showModal, toggleModal, notification
         },
         {
           text: 'Yes',
-          onPress: () => toggleModal(),
+          onPress: () => toggleNotifModal(),
         },
       ],
     );
@@ -69,7 +69,7 @@ export default function NotificationModal({ showModal, toggleModal, notification
 
     // Provide confirm message and close modal
     Alert.alert('Notification settings saved');
-    toggleModal();
+    toggleNotifModal();
   }
 
   return (
