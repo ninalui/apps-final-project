@@ -43,7 +43,7 @@ export default function OtherUserProfileScreen({ navigation, route }) {
           };
         });
         setTopBreeds(topBreedsWithImages);
-        
+
       } catch (error) {
         console.error('Error fetching top breeds: ', error);
       }
@@ -55,7 +55,7 @@ export default function OtherUserProfileScreen({ navigation, route }) {
     <View style={styles.container}>
       {/* User image */}
       <View>
-          <UserImageIcon userImageUri={route.params.userImage} />
+        <UserImageIcon userImageUri={route.params.userImage} />
       </View>
 
       {/* User name */}
@@ -84,6 +84,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#FCFFE0'
   },
   notificationContainer: {
     alignSelf: 'flex-end',

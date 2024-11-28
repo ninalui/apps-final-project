@@ -7,6 +7,7 @@ import { collection, query, where, getDocs, limit } from 'firebase/firestore';
 import BreedCounter from '../ReusableComponent/BreedCounter';
 import BreedIcon from '../ReusableComponent/BreedIcon';
 import Loading from '../ReusableComponent/Loading';
+import LoadingAnimation from '../ReusableComponent/LoadingAnimation';
 
 const MyBreedScreen = ({ route }) => {
     const { breeds, breedCount } = route.params;
@@ -57,9 +58,7 @@ const MyBreedScreen = ({ route }) => {
     }
 
     if (loading) {
-        return (
-            <Loading />
-        );
+        return <LoadingAnimation />;
     }
 
     return (
@@ -82,5 +81,6 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         padding: 5,
+        backgroundColor: '#FCFFE0',
     },
 });

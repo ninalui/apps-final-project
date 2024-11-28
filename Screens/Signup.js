@@ -1,7 +1,7 @@
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native'
 import React, { useState } from 'react'
-import { auth } from '../Firebase/firebaseSetup'  // Import auth instance
-import { createUserWithEmailAndPassword } from 'firebase/auth'  // Import the auth function
+import { auth } from '../Firebase/firebaseSetup'
+import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { writeUserToDB } from '../Firebase/firestoreHelper'
 
 export default function Signup({ navigation }) {
@@ -121,15 +121,15 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
-        backgroundColor: 'white',
-        justifyContent: 'space-between', // This will push the footer to the bottom
+        backgroundColor: '#FCFFE0',
+        justifyContent: 'space-between',
     },
     formContainer: {
         flex: 1,
         justifyContent: 'center', // Centers the form vertically
     },
     footerContainer: {
-        paddingBottom: 20, // Add some padding at the bottom
+        paddingBottom: 20,
     },
     label: {
         marginBottom: 5,
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     button: {
-        backgroundColor: '#007AFF',
+        backgroundColor: '#BACD92',
         padding: 15,
         borderRadius: 5,
         alignItems: 'center',
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     link: {
-        color: '#007AFF',
+        color: '#75A47F',
         textAlign: 'center',
         fontSize: 16, // Match the Login component's link style
     },

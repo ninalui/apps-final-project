@@ -114,7 +114,7 @@ const PostCard = ({ post, onPress, onDelete, isMapView = false, userLocation = n
                 <Image
                     source={{ uri: post.imageUrl }}
                     style={styles.image}
-                    resizeMode="cover"
+                    resizeMode="contain"
                 />
 
                 {/* Breed Info */}
@@ -213,9 +213,10 @@ const styles = StyleSheet.create({
     },
     image: {
         width: '100%',
-        height: 120,
+        height: 200,
         borderRadius: 6,
         marginBottom: 2,
+        backgroundColor: '#f5f5f5',
     },
     breed: {
         fontSize: 12,

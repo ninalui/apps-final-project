@@ -1,6 +1,28 @@
 import { StyleSheet } from 'react-native';
 
+export const colors = {
+  pink: '#F5DAD2',    // Light pink
+  cream: '#FCFFE0',   // Light cream
+  sage: '#BACD92',    // Sage green
+  forest: '#75A47F'   // Forest green
+};
+
+export const navigationStyles = {
+  headerStyle: {
+    backgroundColor: colors.sage,
+  },
+  headerTintColor: '#fff',
+  headerTitleStyle: {
+    fontWeight: 'bold',
+  },
+};
+
 export const globalStyles = StyleSheet.create({
+  // screen container style //
+  screenContainer: {
+    flex: 1,
+    backgroundColor: colors.cream,
+  },
 
   // LAYOUT // 
   row: {
@@ -39,7 +61,7 @@ export const globalStyles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    backgroundColor: '#2196F3',
+    backgroundColor: colors.forest,
   },
   fullButton: {
     flex: 1,
@@ -49,10 +71,10 @@ export const globalStyles = StyleSheet.create({
     opacity: 0.9,
   },
   cancelButton: {
-    backgroundColor: '#ff4444',
+    backgroundColor: '#E38E49',
   },
   saveButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#75A47F',
   },
   buttonText: {
     color: '#fff',
