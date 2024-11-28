@@ -1,6 +1,6 @@
 import { View, Text, Pressable, FlatList, StyleSheet } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import { globalStyles } from '../styles';
+import { globalStyles, colors } from '../styles';
 import { database } from '../Firebase/firebaseSetup';
 import { collection, onSnapshot, collectionGroup, getDocs } from 'firebase/firestore';
 import { getCollectionCount } from '../Firebase/firestoreHelper';
@@ -96,14 +96,14 @@ const LeaderboardScreen = ({ navigation }) => {
                         })}
                     >
                         <View style={styles.rankingContainer}>
-                            <Text style={globalStyles.boldText}>{index + 1}.</Text>
+                            <Text style={styles.rankingNumber}>{index + 1}</Text>
                             <View style={styles.userContainer}>
                                 {/* Display user's image, post count, and breed count */}
                                 <UserImageIcon userImageUri={item.userImageUri} />
                                 <View style={styles.textContainer}>
-                                    <Text style={globalStyles.boldText}>{item.username}</Text>
-                                    <Text style={globalStyles.normalText}>Breeds Collected: {item.breedsCount}</Text>
-                                    <Text style={globalStyles.normalText}>Posts: {item.postsCount}</Text>
+                                    <Text style={styles.usernameText}>{item.username}</Text>
+                                    <Text style={styles.statsText}>Breeds Collected: {item.breedsCount}</Text>
+                                    <Text style={styles.statsText}>Posts: {item.postsCount}</Text>
                                 </View>
                             </View>
                         </View>
@@ -119,24 +119,71 @@ export default LeaderboardScreen;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
+        padding: 20,
         backgroundColor: '#FCFFE0',
     },
     rankingContainer: {
         flexDirection: 'row',
         alignItems: 'center',
+        marginVertical: 8,
+        paddingHorizontal: 10,
+        width: '100%',
     },
     userContainer: {
+        flex: 1,
         flexDirection: 'row',
-        borderWidth: 1,
-        padding: 10,
-        margin: 10,
+        alignItems: 'center',
         backgroundColor: '#fff',
+        borderRadius: 12,
+        padding: 15,
+        marginLeft: 10,
+        width: '85%',
+        // Enhanced 3D effect
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 3,
+        elevation: 3,
     },
     textContainer: {
-        marginLeft: 10,
+        marginLeft: 15,
+        flex: 1,
+    },
+    rankingNumber: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        width: 40,
+        height: 40,
+        textAlign: 'center',
+        lineHeight: 40,
+        backgroundColor: colors.sage,
+        color: '#fff',
+        borderRadius: 20,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
+        elevation: 2,
+    },
+    textContainer: {
+        marginLeft: 15,
+        flex: 1,
         justifyContent: 'center',
-    }
+    },
+    usernameText: {
+        fontSize: 19,
+        fontWeight: 'bold',
+        marginBottom: 2,
+    },
+    statsText: {
+        fontSize: 14,
+        color: '#666',
+        marginBottom: 2,
+    },
 });
