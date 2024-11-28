@@ -1,4 +1,4 @@
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native'
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import React, { useState } from 'react'
 import { auth } from '../Firebase/firebaseSetup'
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth'
@@ -92,50 +92,54 @@ export default function Login({ navigation }) {
     }
 
     return (
-        <View style={styles.container}>
-            <View style={styles.formContainer}>
-                <Text style={styles.label}>Email Address</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Email"
-                    value={email}
-                    onChangeText={setEmail}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                />
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 
-                <Text style={styles.label}>Password</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Password"
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry
-                />
+            <View style={styles.container}>
+                <View style={styles.formContainer}>
+                    <Text style={styles.label}>Email Address</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Email"
+                        value={email}
+                        onChangeText={setEmail}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                    />
 
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={handleLogin}
-                >
-                    <Text style={styles.buttonText}>Log In</Text>
-                </TouchableOpacity>
+                    <Text style={styles.label}>Password</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Password"
+                        value={password}
+                        onChangeText={setPassword}
+                        secureTextEntry
+                    />
 
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={handleForgotPassword}
-                >
-                    <Text style={styles.buttonText}>Forgot Password?</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={handleLogin}
+                    >
+                        <Text style={styles.buttonText}>Log In</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={handleForgotPassword}
+                    >
+                        <Text style={styles.buttonText}>Forgot Password?</Text>
+                    </TouchableOpacity>
+                </View>
+
+                <View style={styles.footerContainer}>
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate('Signup')}
+                    >
+                        <Text style={styles.link}>New User? Create an account</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
 
-            <View style={styles.footerContainer}>
-                <TouchableOpacity
-                    onPress={() => navigation.navigate('Signup')}
-                >
-                    <Text style={styles.link}>New User? Create an account</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
+        </TouchableWithoutFeedback >
     )
 
 }

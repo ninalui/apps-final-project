@@ -1,4 +1,4 @@
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native'
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import React, { useState } from 'react'
 import { auth } from '../Firebase/firebaseSetup'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
@@ -10,6 +10,50 @@ export default function Signup({ navigation }) {
     const [confirmPassword, setConfirmPassword] = useState('')
     const [username, setUsername] = useState('')
     const [passwordMessage, setPasswordMessage] = useState('')
+    const [passwordStrength, setPasswordStrength] = useState('weak')
+
+
+    const checkPasswordStrength = (password) => {
+        // Initialize variables
+        let strength = 0;
+        let messages = [];
+
+        // Check length
+        if (password.length < 6) {
+            messages.push('• Password must be at least 6 characters');
+        } else {
+            strength += 1;
+        }
+
+        // Check for numbers
+        if (password.match(/\d/)) {
+            strength += 1;
+        } else {
+            messages.push('• Add at least 1 number');
+        }
+
+        // Check for uppercase
+        if (password.match(/[A-Z]/)) {
+            strength += 1;
+        } else {
+            messages.push('• Add at least 1 uppercase letter');
+        }
+
+        // Check for special characters
+        if (password.match(/[!@#$%^&*(),.?":{}|<>\-_+=/\\[\];']/)) {
+            strength += 1;
+        } else {
+            messages.push('• Add at least 1 special character');
+        }
+
+        // Set strength level
+        if (strength < 2) setPasswordStrength('weak');
+        else if (strength < 3) setPasswordStrength('medium');
+        else setPasswordStrength('strong');
+
+        // Return messages with line breaks
+        return messages.join('\n');
+    }
 
     const handleSignup = async () => {
         // Basic validation
@@ -61,68 +105,74 @@ export default function Signup({ navigation }) {
     }
 
     return (
-        <View style={styles.container}>
-            <View style={styles.formContainer}>
-                <Text style={styles.label}>Username</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Username"
-                    value={username}
-                    onChangeText={setUsername}
-                    autoCapitalize="none"
-                />
-                <Text style={styles.label}>Email Address</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Email"
-                    value={email}
-                    onChangeText={setEmail}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                />
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.container}>
+                <View style={styles.formContainer}>
+                    <Text style={styles.label}>Username</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Username"
+                        value={username}
+                        onChangeText={setUsername}
+                        autoCapitalize="none"
+                    />
+                    <Text style={styles.label}>Email Address</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Email"
+                        value={email}
+                        onChangeText={setEmail}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                    />
 
-                <Text style={styles.label}>Password</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Password"
-                    value={password}
-                    onChangeText={(text) => {
-                        setPassword(text);
-                        if (text.length < 6) {
-                            setPasswordMessage('Password must be at least 6 characters.');
-                        } else {
-                            setPasswordMessage('');
-                        }
-                    }}
-                    secureTextEntry
-                />
-                {passwordMessage ? <Text style={styles.errorMessage}>{passwordMessage}</Text> : null}
+                    <Text style={styles.label}>Password</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Password"
+                        value={password}
+                        onChangeText={(text) => {
+                            setPassword(text);
+                            setPasswordMessage(checkPasswordStrength(text));
+                        }}
+                        secureTextEntry
+                    />
+                    {passwordMessage ?
+                        <Text style={[
+                            styles.errorMessage,
+                            passwordStrength === 'medium' && styles.warningMessage,
+                            passwordStrength === 'strong' && styles.successMessage
+                        ]}>
+                            {passwordMessage}
+                        </Text>
+                        : null}
 
-                <Text style={styles.label}>Confirm Password</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Password"
-                    value={confirmPassword}
-                    onChangeText={setConfirmPassword}
-                    secureTextEntry
-                />
+                    <Text style={styles.label}>Confirm Password</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Password"
+                        value={confirmPassword}
+                        onChangeText={setConfirmPassword}
+                        secureTextEntry
+                    />
 
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={handleSignup}
-                >
-                    <Text style={styles.buttonText}>Register</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={handleSignup}
+                    >
+                        <Text style={styles.buttonText}>Register</Text>
+                    </TouchableOpacity>
+                </View>
+
+                <View style={styles.footerContainer}>
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate('Login')}
+                    >
+                        <Text style={styles.link}>Already Registered? Login</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-
-            <View style={styles.footerContainer}>
-                <TouchableOpacity
-                    onPress={() => navigation.navigate('Login')}
-                >
-                    <Text style={styles.link}>Already Registered? Login</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
+        </TouchableWithoutFeedback>
     )
 }
 
@@ -167,9 +217,20 @@ const styles = StyleSheet.create({
     link: {
         color: '#75A47F',
         textAlign: 'center',
-        fontSize: 16, // Match the Login component's link style
+        fontSize: 16,
     },
     errorMessage: {
         color: 'red',
+        fontSize: 12,
+        marginTop: 5,
+        lineHeight: 20,
+    },
+    warningMessage: {
+        color: 'orange',
+        lineHeight: 20,
+    },
+    successMessage: {
+        color: 'green',
+        lineHeight: 20,
     }
 })
