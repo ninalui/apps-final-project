@@ -42,16 +42,16 @@ export default function Signup({ navigation }) {
             // Handle specific Firebase auth errors
             switch (error.code) {
                 case 'auth/email-already-in-use':
-                    errorMessage = 'This email is already registered';
+                    errorMessage = 'This email is already registered.';
                     break;
                 case 'auth/invalid-email':
-                    errorMessage = 'Invalid email address';
+                    errorMessage = 'The email address entered is invalid.';
                     break;
                 case 'auth/operation-not-allowed':
-                    errorMessage = 'Email/password accounts are not enabled';
+                    errorMessage = 'Email/password accounts are not enabled.';
                     break;
                 case 'auth/weak-password':
-                    errorMessage = 'Password must be at least 6 characters';
+                    errorMessage = 'Please enter a password with at least 6 characters.';
                     break;
             }
 

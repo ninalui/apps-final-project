@@ -10,7 +10,7 @@ export default function Login({ navigation }) {
     const handleLogin = async () => {
         // Basic validation
         if (!email || !password) {
-            Alert.alert('Error', 'Please fill in all fields');
+            Alert.alert('Error', 'Please fill in all fields.');
             return;
         }
 
@@ -18,23 +18,23 @@ export default function Login({ navigation }) {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             console.log('User logged in successfully:', userCredential.user);
         } catch (error) {
-            let errorMessage = 'An error occurred during login';
+            let errorMessage = 'An error occurred during login.';
 
             switch (error.code) {
                 case 'auth/invalid-email':
-                    errorMessage = 'Invalid email address';
+                    errorMessage = 'The email address entered is invalid.';
                     break;
                 case 'auth/user-disabled':
-                    errorMessage = 'This account has been disabled';
+                    errorMessage = 'This account has been disabled.';
                     break;
                 case 'auth/user-not-found':
-                    errorMessage = 'No account found with this email';
+                    errorMessage = 'No account found with this email.';
                     break;
                 case 'auth/wrong-password':
-                    errorMessage = 'Incorrect password';
+                    errorMessage = 'Incorrect password.';
                     break;
                 case 'auth/invalid-credential':
-                    errorMessage = 'The email or password entered is incorrect';
+                    errorMessage = 'The email or password entered is incorrect.';
                     break;
             }
 
@@ -78,15 +78,16 @@ export default function Login({ navigation }) {
             await sendPasswordResetEmail(auth, email);
             Alert.alert('Success', 'If an account exists with this email, a password reset email has been sent.');
         } catch (error) {
-            let errorMessage = 'An error occurred while sending the password reset email';
+            let errorMessage = 'An error occurred while sending the password reset email.';
 
             switch (error.code) {
                 case 'auth/invalid-email':
-                    errorMessage = 'Invalid email address';
+                    errorMessage = 'The email address entered is invalid.';
                     break;
             }
 
             Alert.alert('Error', errorMessage);
+            console.error('Password reset error:', error);
         }
     }
 
