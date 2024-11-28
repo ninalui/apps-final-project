@@ -1,13 +1,49 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, Text, StyleSheet, RefreshControl } from 'react-native';
+import {
+    View,
+    ScrollView,
+    Text, StyleSheet,
+    RefreshControl,
+    TextInput,
+    TouchableOpacity
+} from 'react-native';
 import { auth } from '../Firebase/firebaseSetup';
 import PostCard from '../ReusableComponent/PostCard';
 import { deletePost, fetchUserPosts } from '../Firebase/firestoreHelper';
+import { MaterialIcons } from '@expo/vector-icons';
 
 const HomeScreen = ({ navigation, route }) => {
     const [posts, setPosts] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
     const user = auth.currentUser;
+    const [filteredPosts, setFilteredPosts] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [sortOrder, setSortOrder] = useState('newest');
+
+    useEffect(() => {
+        const filtered = posts.filter(post => {
+            const searchLower = searchQuery.toLowerCase();
+            return (
+                (post.breed && post.breed.toLowerCase().includes(searchLower)) ||
+                post.description.toLowerCase().includes(searchLower)
+            );
+        });
+
+        // Apply sorting
+        const sorted = [...filtered].sort((a, b) => {
+            const dateA = new Date(a.date);
+            const dateB = new Date(b.date);
+            return sortOrder === 'newest'
+                ? dateB - dateA
+                : dateA - dateB;
+        });
+
+        setFilteredPosts(sorted);
+    }, [searchQuery, posts, sortOrder]);
+
+    const toggleSortOrder = () => {
+        setSortOrder(current => current === 'newest' ? 'oldest' : 'newest');
+    };
 
     const handlePostPress = (post) => {
         const postToEdit = {
@@ -73,7 +109,34 @@ const HomeScreen = ({ navigation, route }) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>My Posts</Text>
+
+            {/* Search and Sort Section */}
+            <View style={styles.filterContainer}>
+                <View style={styles.searchContainer}>
+                    <MaterialIcons name="search" size={24} color="#666" />
+                    <TextInput
+                        style={styles.searchInput}
+                        placeholder="Search by breed or description..."
+                        value={searchQuery}
+                        onChangeText={setSearchQuery}
+                    />
+                </View>
+
+                <TouchableOpacity
+                    style={styles.sortButton}
+                    onPress={toggleSortOrder}
+                >
+                    <MaterialIcons
+                        name={sortOrder === 'newest' ? 'arrow-downward' : 'arrow-upward'}
+                        size={24}
+                        color="#666"
+                    />
+                    <Text style={styles.sortButtonText}>
+                        {sortOrder === 'newest' ? 'Newest First' : 'Oldest First'}
+                    </Text>
+                </TouchableOpacity>
+            </View>
+
             <ScrollView
                 contentContainerStyle={styles.scrollContent}
                 refreshControl={
@@ -83,16 +146,19 @@ const HomeScreen = ({ navigation, route }) => {
                     />
                 }
             >
-                {posts.length > 0 ? (
-                    posts.map((post) => (
+                {filteredPosts.length > 0 ? (
+                    filteredPosts.map((post) => (
                         <PostCard
                             key={post.id}
                             post={post}
                             onPress={() => handlePostPress(post)}
-                            onDelete={handleDeletePost} />
+                            onDelete={handleDeletePost}
+                        />
                     ))
                 ) : (
-                    <Text style={styles.noPostsText}>No posts yet</Text>
+                    <Text style={styles.noPostsText}>
+                        {searchQuery ? 'No matching posts found' : 'No posts yet'}
+                    </Text>
                 )}
             </ScrollView>
         </View>
@@ -118,6 +184,47 @@ const styles = StyleSheet.create({
         marginTop: 50,
         fontSize: 16,
         color: '#666',
+    },
+    filterContainer: {
+        padding: 10,
+        backgroundColor: 'white',
+        borderRadius: 8,
+        margin: 10,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    searchContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#f5f5f5',
+        borderRadius: 8,
+        padding: 8,
+        marginBottom: 10,
+    },
+    searchInput: {
+        flex: 1,
+        marginLeft: 8,
+        fontSize: 16,
+    },
+    sortButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 8,
+        backgroundColor: '#f5f5f5',
+        borderRadius: 8,
+    },
+    sortButtonText: {
+        marginLeft: 8,
+        fontSize: 14,
+        color: '#666',
+        fontWeight: '500',
     },
 });
 
