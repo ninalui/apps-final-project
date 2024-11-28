@@ -227,6 +227,7 @@ const CreatePostScreen = ({ navigation, route }) => {
             >
                 {/* Image Picker */}
                 <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>UPLOAD IMAGE</Text>
                     <ImageManager
                         onImageTaken={handleImageTaken}
                         shouldReset={shouldResetImage}
@@ -317,6 +318,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
+        backgroundColor: '#FCFFE0',
     },
     title: {
         fontSize: 24,
@@ -339,6 +341,7 @@ const styles = StyleSheet.create({
         padding: 12,
         minHeight: 100,
         textAlignVertical: 'top',
+        backgroundColor: '#fff',
     },
     mapContainer: {
         height: 150,
@@ -389,10 +392,10 @@ const styles = StyleSheet.create({
         opacity: 0.9,
     },
     cancelButton: {
-        backgroundColor: '#ff4444',
+        backgroundColor: '#F9C0AB',
     },
     saveButton: {
-        backgroundColor: '#4CAF50',
+        backgroundColor: '#75A47F',
     },
     buttonText: {
         color: '#fff',

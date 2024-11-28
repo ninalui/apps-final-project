@@ -6,6 +6,7 @@ import { collection, onSnapshot, collectionGroup, getDocs } from 'firebase/fires
 import { getCollectionCount } from '../Firebase/firestoreHelper';
 import UserImageIcon from '../ReusableComponent/UserImageIcon';
 import Loading from '../ReusableComponent/Loading';
+import LoadingAnimation from '../ReusableComponent/LoadingAnimation';
 
 const LeaderboardScreen = ({ navigation }) => {
     const [users, setUsers] = useState([]);
@@ -47,9 +48,9 @@ const LeaderboardScreen = ({ navigation }) => {
                 let userData;
                 if (source === 'users') {
                     userData = await fetchUserData(snapshot);
-                // fetchUserData needs to be called with the snapshot of users collection
+                    // fetchUserData needs to be called with the snapshot of users collection
                 } else {
-                    userData = await fetchUserData(await getDocs(collection(database, 'users'))); 
+                    userData = await fetchUserData(await getDocs(collection(database, 'users')));
                 }
                 if (userData.length) {
                     // Get top 3 users based on score
@@ -65,8 +66,8 @@ const LeaderboardScreen = ({ navigation }) => {
 
         // Listen for updates in users collection and posts and breeds subcollections
         const unsubscribeUsers = onSnapshot(collection(database, 'users'), (snapshot) => handleUpdate(snapshot, 'users'));
-        const unsubscribePosts = onSnapshot(collectionGroup(database, 'posts'),  () => handleUpdate(null, 'posts'));
-        const unsubscribeBreeds = onSnapshot(collectionGroup(database, 'breeds'),() => handleUpdate(null, 'breeds'));
+        const unsubscribePosts = onSnapshot(collectionGroup(database, 'posts'), () => handleUpdate(null, 'posts'));
+        const unsubscribeBreeds = onSnapshot(collectionGroup(database, 'breeds'), () => handleUpdate(null, 'breeds'));
 
         return () => {
             unsubscribeUsers();
@@ -76,11 +77,8 @@ const LeaderboardScreen = ({ navigation }) => {
     }, []);
 
     if (loading) {
-        return (
-            <Loading />
-        );
+        return <LoadingAnimation />;
     }
-
 
     return (
         <View style={styles.container}>
@@ -124,6 +122,7 @@ const styles = StyleSheet.create({
         padding: 10,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: '#FCFFE0',
     },
     rankingContainer: {
         flexDirection: 'row',

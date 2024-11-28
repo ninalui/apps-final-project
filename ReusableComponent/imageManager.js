@@ -130,13 +130,12 @@ const styles = StyleSheet.create({
     uploadContainer: {
         width: '100%',
         height: 200,
-        borderWidth: 2,
-        borderColor: '#ccc',
-        borderStyle: 'dashed',
+        borderWidth: 1,
+        borderColor: '#ddd',
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#fff',
     },
     pressed: {
         opacity: 0.7,

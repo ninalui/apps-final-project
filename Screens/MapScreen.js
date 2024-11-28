@@ -3,10 +3,10 @@ import { View, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import ClusteredMapView from 'react-native-maps-clustering';
 import { Marker } from 'react-native-maps';
 import { getAllUsersPosts } from '../Firebase/firestoreHelper';
-import Loading from '../ReusableComponent/Loading';
 import PostCard from '../ReusableComponent/PostCard';
 import { MaterialIcons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
+import LoadingAnimation from '../ReusableComponent/LoadingAnimation';
 
 const MapScreen = ({ navigation }) => {
     const [posts, setPosts] = useState([]);
@@ -73,7 +73,7 @@ const MapScreen = ({ navigation }) => {
     };
 
     if (isLoading) {
-        return <Loading />;
+        return <LoadingAnimation />;
     }
 
     return (
@@ -130,6 +130,7 @@ const MapScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#FCFFE0',
     },
     map: {
         width: '100%',

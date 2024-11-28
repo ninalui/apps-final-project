@@ -13,6 +13,7 @@ import BreedIcon from '../ReusableComponent/BreedIcon';
 import BreedCounter from '../ReusableComponent/BreedCounter';
 import UserImageIcon from '../ReusableComponent/UserImageIcon';
 import Loading from '../ReusableComponent/Loading';
+import LoadingAnimation from '../ReusableComponent/LoadingAnimation';
 
 const ProfileScreen = ({ navigation }) => {
     const [loading, setLoading] = useState(true);
@@ -126,9 +127,7 @@ const ProfileScreen = ({ navigation }) => {
     }, []);
 
     if (loading) {
-        return (
-            <Loading />
-        );
+        return <LoadingAnimation />;
     }
 
 
@@ -225,6 +224,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: '#FCFFE0'
     },
     notificationContainer: {
         alignSelf: 'flex-end',
