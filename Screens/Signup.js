@@ -9,6 +9,7 @@ export default function Signup({ navigation }) {
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
     const [username, setUsername] = useState('')
+    const [passwordMessage, setPasswordMessage] = useState('')
 
     const handleSignup = async () => {
         // Basic validation
@@ -50,7 +51,7 @@ export default function Signup({ navigation }) {
                     errorMessage = 'Email/password accounts are not enabled';
                     break;
                 case 'auth/weak-password':
-                    errorMessage = 'Password should be at least 6 characters';
+                    errorMessage = 'Password must be at least 6 characters';
                     break;
             }
 
@@ -80,16 +81,24 @@ export default function Signup({ navigation }) {
                     autoCapitalize="none"
                 />
 
-                <Text style={styles.label}>password</Text>
+                <Text style={styles.label}>Password</Text>
                 <TextInput
                     style={styles.input}
                     placeholder="Password"
                     value={password}
-                    onChangeText={setPassword}
+                    onChangeText={(text) => {
+                        setPassword(text);
+                        if (text.length < 6) {
+                            setPasswordMessage('Password must be at least 6 characters.');
+                        } else {
+                            setPasswordMessage('');
+                        }
+                    }}
                     secureTextEntry
                 />
+                {passwordMessage ? <Text style={styles.errorMessage}>{passwordMessage}</Text> : null}
 
-                <Text style={styles.label}>Confirm password</Text>
+                <Text style={styles.label}>Confirm Password</Text>
                 <TextInput
                     style={styles.input}
                     placeholder="Password"
@@ -134,12 +143,12 @@ const styles = StyleSheet.create({
     label: {
         marginBottom: 5,
         color: '#000',
+        marginTop: 20,
     },
     input: {
         borderWidth: 1,
         borderColor: '#ddd',
         padding: 10,
-        marginBottom: 20,
         borderRadius: 5,
         backgroundColor: '#fff',
     },
@@ -149,6 +158,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         alignItems: 'center',
         marginBottom: 20,
+        marginTop: 20,
     },
     buttonText: {
         color: 'white',
@@ -159,4 +169,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 16, // Match the Login component's link style
     },
+    errorMessage: {
+        color: 'red',
+    }
 })
