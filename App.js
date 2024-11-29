@@ -7,6 +7,9 @@ import { auth } from './Firebase/firebaseSetup';
 import * as Notifications from 'expo-notifications';
 import { Svg, Path, Rect } from 'react-native-svg';
 import { colors, navigationStyles } from './styles';
+import LoadingAnimation from './ReusableComponent/LoadingAnimation';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import OnboardingScreen from './Screens/OnboardingScreen';
 
 // Import screen components
 import HomeScreen from './Screens/HomeScreen';
@@ -179,8 +182,33 @@ function AppStack() {
 }
 
 function AuthStackScreen() {
+  const [hasSeenOnboarding, setHasSeenOnboarding] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    checkOnboardingStatus();
+  }, []);
+
+  const checkOnboardingStatus = async () => {
+    try {
+      const value = await AsyncStorage.getItem('hasSeenOnboarding');
+      setHasSeenOnboarding(value === 'true');
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Error checking onboarding status:', error);
+      setIsLoading(false);
+    }
+  };
+
+  if (isLoading) {
+    return <LoadingAnimation />
+  }
+
   return (
     <AuthStack.Navigator screenOptions={{ headerShown: false }}>
+      {!hasSeenOnboarding ? (
+        <AuthStack.Screen name="Onboarding" component={OnboardingScreen} />
+      ) : null}
       <AuthStack.Screen name="Login" component={Login} />
       <AuthStack.Screen name="Signup" component={Signup} />
     </AuthStack.Navigator>

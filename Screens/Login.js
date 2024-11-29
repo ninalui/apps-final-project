@@ -1,14 +1,14 @@
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native'
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import React, { useState } from 'react'
 import { auth } from '../Firebase/firebaseSetup'
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth'
+import LottieView from 'lottie-react-native';
 
 export default function Login({ navigation }) {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
     const handleLogin = async () => {
-        // Basic validation
         if (!email || !password) {
             Alert.alert('Error', 'Please fill in all fields.');
             return;
@@ -43,15 +43,12 @@ export default function Login({ navigation }) {
         }
     }
 
-    // Generate password reset link and send email
     const handleForgotPassword = () => {
-        // Check email is entered
         if (!email) {
             Alert.alert('Error', 'Please enter your email address.');
             return;
         }
 
-        // Check email is valid
         if (!email.includes('@') || !email.includes('.')) {
             Alert.alert('Error', 'Please enter a valid email address.');
             return;
@@ -59,7 +56,6 @@ export default function Login({ navigation }) {
 
         const userEmail = email.trim();
 
-        // Confirm sending reset password link
         Alert.alert('Password Reset', `Send a password reset email to ${userEmail}?`,
             [
                 {
@@ -72,7 +68,6 @@ export default function Login({ navigation }) {
             ]);
     }
 
-    // Send password reset email
     const sendResetEmail = async (email) => {
         try {
             await sendPasswordResetEmail(auth, email);
@@ -92,52 +87,62 @@ export default function Login({ navigation }) {
     }
 
     return (
-        <View style={styles.container}>
-            <View style={styles.formContainer}>
-                <Text style={styles.label}>Email Address</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Email"
-                    value={email}
-                    onChangeText={setEmail}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                />
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.container}>
+                <View style={styles.animationContainer}>
+                    <LottieView
+                        source={require('../assets/animations/Animation - 1732839937589.json')}
+                        autoPlay
+                        loop
+                        style={styles.animation2}
+                    />
+                </View>
 
-                <Text style={styles.label}>Password</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Password"
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry
-                />
+                <View style={styles.formContainer}>
+                    <Text style={styles.label}>Email Address</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Email"
+                        value={email}
+                        onChangeText={setEmail}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                    />
 
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={handleLogin}
-                >
-                    <Text style={styles.buttonText}>Log In</Text>
-                </TouchableOpacity>
+                    <Text style={styles.label}>Password</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Password"
+                        value={password}
+                        onChangeText={setPassword}
+                        secureTextEntry
+                    />
 
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={handleForgotPassword}
-                >
-                    <Text style={styles.buttonText}>Forgot Password?</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={handleLogin}
+                    >
+                        <Text style={styles.buttonText}>Log In</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={handleForgotPassword}
+                    >
+                        <Text style={styles.buttonText}>Forgot Password?</Text>
+                    </TouchableOpacity>
+                </View>
+
+                <View style={styles.footerContainer}>
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate('Signup')}
+                    >
+                        <Text style={styles.link}>New User? Create an account</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-
-            <View style={styles.footerContainer}>
-                <TouchableOpacity
-                    onPress={() => navigation.navigate('Signup')}
-                >
-                    <Text style={styles.link}>New User? Create an account</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
+        </TouchableWithoutFeedback>
     )
-
 }
 
 const styles = StyleSheet.create({
@@ -145,11 +150,23 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 20,
         backgroundColor: '#FCFFE0',
-        justifyContent: 'space-between',
+    },
+    animationContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingTop: 50,
+        marginTop: 50,
+    },
+    animation2: {
+        width: 150,
+        height: 150,
+        marginTop: -100,
     },
     formContainer: {
-        flex: 1,
+        flex: 1.5,
         justifyContent: 'center',
+        marginTop: -300,
     },
     footerContainer: {
         paddingBottom: 20,
