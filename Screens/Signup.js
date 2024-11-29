@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { auth } from '../Firebase/firebaseSetup'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { writeUserToDB } from '../Firebase/firestoreHelper'
+import LottieView from 'lottie-react-native';
 
 export default function Signup({ navigation }) {
     const [email, setEmail] = useState('')
@@ -103,10 +104,18 @@ export default function Signup({ navigation }) {
             console.error('Signup error:', error);
         }
     }
-
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
+                <View style={styles.animationContainer}>
+                    <LottieView
+                        source={require('../assets/animations/Animation - 1732842837049.json')}
+                        autoPlay
+                        loop
+                        style={styles.animation}
+                    />
+                </View>
+
                 <View style={styles.formContainer}>
                     <Text style={styles.label}>Username</Text>
                     <TextInput
@@ -173,7 +182,9 @@ export default function Signup({ navigation }) {
                 </View>
             </View>
         </TouchableWithoutFeedback>
-    )
+    );
+
+
 }
 
 const styles = StyleSheet.create({
@@ -181,11 +192,23 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 20,
         backgroundColor: '#FCFFE0',
-        justifyContent: 'space-between',
+    },
+    animationContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingTop: 50,
+        marginTop: -2,
+    },
+    animation: {
+        width: 150,
+        height: 150,
+        marginTop: -200,
     },
     formContainer: {
-        flex: 1,
-        justifyContent: 'center', // Centers the form vertically
+        flex: 1.5,
+        justifyContent: 'center',
+        marginTop: -400,
     },
     footerContainer: {
         paddingBottom: 20,
@@ -193,12 +216,13 @@ const styles = StyleSheet.create({
     label: {
         marginBottom: 5,
         color: '#000',
-        marginTop: 20,
+        marginTop: 10,
     },
     input: {
         borderWidth: 1,
         borderColor: '#ddd',
         padding: 10,
+        marginBottom: 10,
         borderRadius: 5,
         backgroundColor: '#fff',
     },
@@ -233,4 +257,4 @@ const styles = StyleSheet.create({
         color: 'green',
         lineHeight: 20,
     }
-})
+});
