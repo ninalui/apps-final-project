@@ -10,51 +10,34 @@ export default function Signup({ navigation }) {
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
     const [username, setUsername] = useState('')
-    const [passwordMessage, setPasswordMessage] = useState('')
-    const [passwordStrength, setPasswordStrength] = useState('weak')
+    const [requirementMessage, setRequirementMessage] = useState('');
+    const [suggestionMessage, setSuggestionMessage] = useState('');
 
+    const checkPasswordValidation = (text) => {
+        let requirements = '';
+        let suggestions = [];
 
-    const checkPasswordStrength = (password) => {
-        // Initialize variables
-        let strength = 0;
-        let messages = [];
-
-        // Check length
-        if (password.length < 6) {
-            messages.push('• Password must be at least 6 characters');
-        } else {
-            strength += 1;
+        // Requirement
+        if (text.length < 6) {
+            requirements = '• Password must be at least 6 characters';
         }
 
-        // Check for numbers
-        if (password.match(/\d/)) {
-            strength += 1;
-        } else {
-            messages.push('• Add at least 1 number');
+        // Suggestions
+        if (!text.match(/\d/)) {
+            suggestions.push('• Consider adding a number');
+        }
+        if (!text.match(/[A-Z]/)) {
+            suggestions.push('• Consider adding an uppercase letter');
+        }
+        if (!text.match(/[!@#$%^&*(),.?":{}|<>\-_+=/\\[\];']/)) {
+            suggestions.push('• Consider adding a special character');
         }
 
-        // Check for uppercase
-        if (password.match(/[A-Z]/)) {
-            strength += 1;
-        } else {
-            messages.push('• Add at least 1 uppercase letter');
-        }
-
-        // Check for special characters
-        if (password.match(/[!@#$%^&*(),.?":{}|<>\-_+=/\\[\];']/)) {
-            strength += 1;
-        } else {
-            messages.push('• Add at least 1 special character');
-        }
-
-        // Set strength level
-        if (strength < 2) setPasswordStrength('weak');
-        else if (strength < 3) setPasswordStrength('medium');
-        else setPasswordStrength('strong');
-
-        // Return messages with line breaks
-        return messages.join('\n');
-    }
+        return {
+            requirements,
+            suggestions: suggestions.length > 0 ? 'Suggestions:\n' + suggestions.join('\n') : ''
+        };
+    };
 
     const handleSignup = async () => {
         // Basic validation
@@ -142,19 +125,22 @@ export default function Signup({ navigation }) {
                         value={password}
                         onChangeText={(text) => {
                             setPassword(text);
-                            setPasswordMessage(checkPasswordStrength(text));
+                            const validation = checkPasswordValidation(text);
+                            setRequirementMessage(validation.requirements);
+                            setSuggestionMessage(validation.suggestions);
                         }}
                         secureTextEntry
                     />
-                    {passwordMessage ?
-                        <Text style={[
-                            styles.errorMessage,
-                            passwordStrength === 'medium' && styles.warningMessage,
-                            passwordStrength === 'strong' && styles.successMessage
-                        ]}>
-                            {passwordMessage}
+                    {requirementMessage && (
+                        <Text style={styles.errorMessage}>
+                            {requirementMessage}
                         </Text>
-                        : null}
+                    )}
+                    {suggestionMessage && (
+                        <Text style={styles.suggestionMessage}>
+                            {suggestionMessage}
+                        </Text>
+                    )}
 
                     <Text style={styles.label}>Confirm Password</Text>
                     <TextInput
@@ -246,15 +232,13 @@ const styles = StyleSheet.create({
     errorMessage: {
         color: 'red',
         fontSize: 12,
-        marginTop: 5,
+        marginTop: -6,
         lineHeight: 20,
     },
-    warningMessage: {
-        color: 'orange',
-        lineHeight: 20,
-    },
-    successMessage: {
-        color: 'green',
-        lineHeight: 20,
+    suggestionMessage: {
+        color: '#666',
+        fontSize: 12,
+        marginTop: -5,
+        lineHeight: 15,
     }
 });
