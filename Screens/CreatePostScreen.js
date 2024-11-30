@@ -85,22 +85,6 @@ const CreatePostScreen = ({ navigation, route }) => {
             return;
         }
 
-        if (!isEditing || !existingPost) {
-            // Create new post logic
-            if (breedResult?.labelName) {
-                await updateBreedCount(user.uid, breedResult.labelName);
-            }
-        } else {
-            // Update existing post logic
-            if (existingPost.breed !== breedResult?.labelName) {
-                await updateBreedCountOnEdit(
-                    user.uid,
-                    existingPost.breed,
-                    breedResult?.labelName
-                );
-            }
-        }
-
         try {
             const postData = {
                 imageUrl,
@@ -118,17 +102,22 @@ const CreatePostScreen = ({ navigation, route }) => {
 
             let postId;
             if (isEditing) {
-                // Update breed counts if the breed has changed
-                if (existingPost.breed !== breedResult?.labelName) {
+                postId = existingPost.id;
+
+                // First update breed counts - handle the case when breeds are different
+                const oldBreed = existingPost.breed;
+                const newBreed = breedResult?.labelName;
+
+                if (oldBreed !== newBreed) {
+                    console.log('Updating breed from', oldBreed, 'to', newBreed); // Debug log
                     await updateBreedCountOnEdit(
                         user.uid,
-                        existingPost.breed,
-                        breedResult?.labelName
+                        oldBreed,
+                        newBreed
                     );
                 }
 
-                // Update existing post
-                postId = existingPost.id;
+                // Then update the post
                 await updatePost(user.uid, postId, postData);
             } else {
                 // Create new post
