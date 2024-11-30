@@ -109,7 +109,6 @@ const CreatePostScreen = ({ navigation, route }) => {
                 const newBreed = breedResult?.labelName;
 
                 if (oldBreed !== newBreed) {
-                    console.log('Updating breed from', oldBreed, 'to', newBreed); // Debug log
                     await updateBreedCountOnEdit(
                         user.uid,
                         oldBreed,
@@ -117,14 +116,14 @@ const CreatePostScreen = ({ navigation, route }) => {
                     );
                 }
 
-                // Then update the post
+                // update the post
                 await updatePost(user.uid, postId, postData);
             } else {
-                // Create new post
+                // create new post
                 postData.createdAt = new Date();
                 postId = await createPost(user.uid, postData);
 
-                // Update breed count only for new posts
+                // update breed count only for new posts
                 if (breedResult?.labelName) {
                     await updateBreedCount(user.uid, breedResult.labelName);
                 }
