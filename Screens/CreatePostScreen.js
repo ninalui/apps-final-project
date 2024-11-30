@@ -8,17 +8,21 @@ import { createPost, updateBreedCount, updatePost, updateBreedCountOnEdit } from
 import { Alert } from 'react-native';
 import LocationManager from '../ReusableComponent/LocationManager';
 
+
+
 const CreatePostScreen = ({ navigation, route }) => {
     const isEditing = route.params?.isEditing || false;
-    const existingPost = route.params?.existingPost;
+    const existingPost = route.params?.existingPost || null;
 
     const user = auth.currentUser;
     const [shouldResetImage, setShouldResetImage] = useState(false);
     const [shouldResetLocation, setShouldResetLocation] = useState(false);
-    const [breedResult, setBreedResult] = useState(existingPost?.breed ? {
-        labelName: existingPost.breed,
-        confidence: existingPost.confidence
-    } : null);
+    const [breedResult, setBreedResult] = useState(
+        existingPost && existingPost.breed ? {
+            labelName: existingPost.breed,
+            confidence: existingPost.confidence
+        } : null
+    );
     const [isLoading, setIsLoading] = useState(false);
     const [description, setDescription] = useState(existingPost?.description || '');
     const [date, setDate] = useState(
@@ -79,6 +83,22 @@ const CreatePostScreen = ({ navigation, route }) => {
         if (breedResult?.labelName === "Not a Dog!") {
             Alert.alert('Error', 'Please upload a picture of a dog!');
             return;
+        }
+
+        if (!isEditing || !existingPost) {
+            // Create new post logic
+            if (breedResult?.labelName) {
+                await updateBreedCount(user.uid, breedResult.labelName);
+            }
+        } else {
+            // Update existing post logic
+            if (existingPost.breed !== breedResult?.labelName) {
+                await updateBreedCountOnEdit(
+                    user.uid,
+                    existingPost.breed,
+                    breedResult?.labelName
+                );
+            }
         }
 
         try {
