@@ -48,6 +48,9 @@ const HomeScreen = ({ navigation, route }) => {
     const handlePostPress = (post) => {
         const postToEdit = {
             ...post,
+            id: post.id,
+            breed: post.breed,
+            confidence: post.confidence,
             date: post.date instanceof Date ? post.date.toISOString() : post.date,
             createdAt: post.createdAt instanceof Date ? post.createdAt.toISOString() : post.createdAt
         };
@@ -60,6 +63,7 @@ const HomeScreen = ({ navigation, route }) => {
 
     const handleDeletePost = async (postId) => {
         try {
+            // Use the deletePost helper function that handles both post and breed count
             await deletePost(user.uid, postId);
             // Update local state to remove the deleted post
             setPosts(currentPosts => currentPosts.filter(post => post.id !== postId));

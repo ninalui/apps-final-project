@@ -8,17 +8,21 @@ import { createPost, updateBreedCount, updatePost, updateBreedCountOnEdit } from
 import { Alert } from 'react-native';
 import LocationManager from '../ReusableComponent/LocationManager';
 
+
+
 const CreatePostScreen = ({ navigation, route }) => {
     const isEditing = route.params?.isEditing || false;
-    const existingPost = route.params?.existingPost;
+    const existingPost = route.params?.existingPost || null;
 
     const user = auth.currentUser;
     const [shouldResetImage, setShouldResetImage] = useState(false);
     const [shouldResetLocation, setShouldResetLocation] = useState(false);
-    const [breedResult, setBreedResult] = useState(existingPost?.breed ? {
-        labelName: existingPost.breed,
-        confidence: existingPost.confidence
-    } : null);
+    const [breedResult, setBreedResult] = useState(
+        existingPost && existingPost.breed ? {
+            labelName: existingPost.breed,
+            confidence: existingPost.confidence
+        } : null
+    );
     const [isLoading, setIsLoading] = useState(false);
     const [description, setDescription] = useState(existingPost?.description || '');
     const [date, setDate] = useState(
@@ -98,24 +102,28 @@ const CreatePostScreen = ({ navigation, route }) => {
 
             let postId;
             if (isEditing) {
-                // Update breed counts if the breed has changed
-                if (existingPost.breed !== breedResult?.labelName) {
+                postId = existingPost.id;
+
+                // First update breed counts - handle the case when breeds are different
+                const oldBreed = existingPost.breed;
+                const newBreed = breedResult?.labelName;
+
+                if (oldBreed !== newBreed) {
                     await updateBreedCountOnEdit(
                         user.uid,
-                        existingPost.breed,
-                        breedResult?.labelName
+                        oldBreed,
+                        newBreed
                     );
                 }
 
-                // Update existing post
-                postId = existingPost.id;
+                // update the post
                 await updatePost(user.uid, postId, postData);
             } else {
-                // Create new post
+                // create new post
                 postData.createdAt = new Date();
                 postId = await createPost(user.uid, postData);
 
-                // Update breed count only for new posts
+                // update breed count only for new posts
                 if (breedResult?.labelName) {
                     await updateBreedCount(user.uid, breedResult.labelName);
                 }

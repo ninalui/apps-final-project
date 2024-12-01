@@ -2,6 +2,103 @@
 ## CS5520 Final Project
 Team members: Nina Lui, Shuying Du
 
+### Iteration 3
+#### Functionalities added
+- Authentication
+
+#### firebase rules
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow authenticated users read posts and breeds subcollections
+    match /{path=**}/posts/{postId} {
+      allow read: if request.auth != null;
+    }
+    
+    match /{path=**}/breeds/{breedId} {
+      allow read: if request.auth != null;
+    }
+    
+    // Users collection
+    match /users/{userId} {
+      // Allow read of user profiles for authenticated users
+      allow read: if request.auth != null;
+      // Only user can write their own profile
+      allow write: if request.auth != null && request.auth.uid == userId;
+      
+      // Posts subcollection
+      match /posts/{postId} {
+        allow write: if request.auth != null && request.auth.uid == userId;
+      }
+      
+      // Breeds subcollection
+      match /breeds/{breedId} {
+        allow write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+  }
+}
+```
+
+#### Current state of the application
+##### Onboarding screens 
+<div align="center">
+    <img src="screenshots/iteration3_onboarding1.jpeg" width="300"/>
+    <img src="screenshots/iteration3_onboarding2.jpeg" width="300" /> 
+    <img src="screenshots/iteration3_onboarding3.jpeg" width="300" /> 
+</div>
+
+##### Login/Signup screens 
+<div align="center">
+    <img src="screenshots/iteration3_login.png" width="300"/>
+    <img src="screenshots/iteration3_signup.png" width="300" /> 
+</div>
+
+##### Home and Create Posts screens
+<div align="center">
+    <img src="screenshots/iteration3_createpost.png" width="300"/>
+    <img src="screenshots/iteration3_myposts.png" width="300" /> 
+</div>
+
+##### Profile and Breed Collection
+<div align="center">
+    <img src="screenshots/iteration3_profile.png" width="300" />
+    <img src="screenshots/iteration3_mybreed.png" width="300" />
+</div>
+
+##### Leaderboard
+<div align="center">
+    <img src="screenshots/iteration3_leaderboard.png" width="300" />
+</div>
+
+##### Map screen
+<div align="center">
+    <img src="screenshots/iteration3_hotspot1.png" width="300" />
+    <img src="screenshots/iteration3_hotspot2.png" width="300" />
+</div>
+
+##### Notification
+<div align="center">
+    <img src="screenshots/iteration3_notif.png" width="300" />
+</div>
+
+#### Contribution 
+Nina:
+
+Shuying:
+1. Enhanced search and sort functionality:
+    - Added search bar to filter posts by breed/description
+    - Implemented sort toggle for chronological post ordering
+2. Improved UI/UX consistency:
+    - Unified screen backgrounds, headers, and navigation styling
+    - Enhanced BreedIcon and BreedCounter components with improved spacing 
+    - Implemented consistent layout across profile screens
+3. Implemented onboarding and authentication UI:
+    - Created onboarding flow with slide functionality
+    - Enhanced Login/Signup UI with password suggestion and animation
+
+_________________________________________________________________________
 ### Iteration 2
 #### Functionalities added
 - Location use

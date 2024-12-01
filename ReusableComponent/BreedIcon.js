@@ -44,6 +44,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: 12,
+    overflow: 'hidden',
   },
   breedName: {
     fontSize: 12,
