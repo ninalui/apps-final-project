@@ -24,8 +24,9 @@ const HomeScreen = ({ navigation, route }) => {
         const filtered = posts.filter(post => {
             const searchLower = searchQuery.toLowerCase();
             return (
-                (post.breed && post.breed.toLowerCase().includes(searchLower)) ||
-                post.description.toLowerCase().includes(searchLower)
+                post &&
+                ((post.breed && post.breed.toLowerCase().includes(searchLower)) ||
+                post.description.toLowerCase().includes(searchLower))
             );
         });
 
