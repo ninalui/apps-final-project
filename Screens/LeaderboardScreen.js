@@ -1,11 +1,10 @@
 import { View, Text, Pressable, FlatList, StyleSheet } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import { globalStyles, colors } from '../styles';
+import { colors } from '../styles';
 import { database } from '../Firebase/firebaseSetup';
 import { collection, onSnapshot, collectionGroup, getDocs } from 'firebase/firestore';
 import { getCollectionCount } from '../Firebase/firestoreHelper';
 import UserImageIcon from '../ReusableComponent/UserImageIcon';
-import Loading from '../ReusableComponent/Loading';
 import LoadingAnimation from '../ReusableComponent/LoadingAnimation';
 
 const LeaderboardScreen = ({ navigation }) => {
