@@ -12,7 +12,6 @@ import ImageModal from '../ReusableComponent/ImageModal';
 import BreedIcon from '../ReusableComponent/BreedIcon';
 import BreedCounter from '../ReusableComponent/BreedCounter';
 import UserImageIcon from '../ReusableComponent/UserImageIcon';
-import Loading from '../ReusableComponent/Loading';
 import LoadingAnimation from '../ReusableComponent/LoadingAnimation';
 
 const ProfileScreen = ({ navigation }) => {

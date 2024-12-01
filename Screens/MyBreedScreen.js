@@ -6,7 +6,6 @@ import { collection, query, where, getDocs, limit } from 'firebase/firestore';
 
 import BreedCounter from '../ReusableComponent/BreedCounter';
 import BreedIcon from '../ReusableComponent/BreedIcon';
-import Loading from '../ReusableComponent/Loading';
 import LoadingAnimation from '../ReusableComponent/LoadingAnimation';
 
 const MyBreedScreen = ({ route }) => {

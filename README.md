@@ -6,7 +6,7 @@ Team members: Nina Lui, Shuying Du
 #### Functionalities added
 - Authentication
 
-#### firebase rules
+#### Firebase rules
 ```
 rules_version = '2';
 service cloud.firestore {
@@ -85,6 +85,10 @@ service cloud.firestore {
 
 #### Contribution 
 Nina:
+1. Completed missing authentication features:
+    - Added sending users password reset link
+    - Added displaying message to user that password must be over 6 characters
+    - Updated error messages to be more user-friendly
 
 Shuying:
 1. Enhanced search and sort functionality:
