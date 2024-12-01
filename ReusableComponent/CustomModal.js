@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal, StyleSheet, View } from 'react-native';
 
 
-export default function NotificationModal({ children, showModal }) {
+export default function CustomModal({ children, showModal }) {
 
   return (
     <Modal
@@ -41,53 +41,4 @@ const styles = StyleSheet.create({
     elevation: 5,
     width: '80%',
   },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 10,
-  },
-  textContainer: {
-    flex: 1,
-  },
-  timeInputContainer: {
-    flex: 3
-  },
-  switchContainer: {
-    alignItems: 'flex-end',
-  },
-  text: {
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  button: {
-    flex: 1,
-    padding: 15,
-    borderRadius: 8,
-    marginHorizontal: 10,
-    alignItems: 'center',
-    elevation: 2,  // Android shadow
-    shadowColor: '#000',  // iOS shadow
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-  buttonPressed: {
-    transform: [{ scale: 0.98 }],
-    opacity: 0.9,
-  },
-  cancelButton: {
-    backgroundColor: '#ff4444',
-  },
-  saveButton: {
-    backgroundColor: '#4CAF50',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  }
 });
