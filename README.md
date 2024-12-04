@@ -1,6 +1,8 @@
 # PupScout
 ## CS5520 Final Project
-Team members: Nina Lui, Shuying Du
+**Team members:** Nina Lui, Shuying Du
+
+**Demo:** https://www.youtube.com/watch?v=nCavV-GfDUs
 
 ### Iteration 3
 #### Functionalities added
